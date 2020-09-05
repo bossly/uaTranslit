@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">Трансліт</string>
-
-    <string-array name="types">
-        <item>Паспортна (КМУ 2010)</item>
-        <item>Географічна (УКППТ 1996)</item>
-        <item>Американська (BGN/PCGN 1965)</item>
-    </string-array>
-
+    <string name="type_select">Вибір:</string>
+    <string name="input_cyrillic">Кирилиця</string>
+    <string name="input_latin">Latin</string>
 </resources>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
@@ -12,9 +10,9 @@
         tools:context=".MainActivity">
 
         <TextView
-            android:text="Вибір:"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/type_select" />
 
         <Spinner
             android:id="@+id/selector"
@@ -29,16 +27,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:hint="Кирилиця" />
+            android:hint="@string/input_cyrillic" />
 
-        <EditText
-            android:textSize="32sp"
-            android:id="@+id/outputField"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/outputField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:focusable="false"
+                android:hint="@string/input_latin"
+                android:textSize="32sp" />
+
+            <TextView
+                android:id="@+id/countText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                tools:text="10" />
+
+        </FrameLayout>
+
+        <ua.bossly.tools.translit.TextView
+            android:id="@+id/tipText"
+            android:padding="8dp"
+            android:linksClickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:editable="false"
-            android:focusable="false"
-            android:hint="Latin"/>
+            android:textColorLink="@color/colorPrimary"
+            tools:html="@string/tips_placeholder" />
 
     </LinearLayout>
 </layout>

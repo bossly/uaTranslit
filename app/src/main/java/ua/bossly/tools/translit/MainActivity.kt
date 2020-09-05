@@ -15,8 +15,10 @@ import ua.bossly.tools.translit.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var types: Array<TransformType>
+    private lateinit var transliterationType: TransformType
+
     private var shareProviderIntent: Intent? = null
-    private var transliterationType = TransliterationType.PASSPORT_2010
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +29,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             transliterate()
         }
 
-        val arItems = resources.getStringArray(R.array.types)
-        val spinnerAdapter: ArrayAdapter<Any?> = ArrayAdapter(this,
+        types = TransformTypes.types(this)
+        transliterationType = types.first()
+        val arItems = types.map { a -> a.name }
+        val spinnerAdapter: ArrayAdapter<Any?> = ArrayAdapter(
+            this,
             android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, arItems
         )
         binding.selector.adapter = spinnerAdapter
@@ -38,12 +43,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         actionBar?.setDisplayUseLogoEnabled(true)
     }
 
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-        TODO("Not yet implemented")
-    }
+    override fun onNothingSelected(adapterView: AdapterView<*>?) {}
 
     override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, itemId: Long) {
-        transliterationType =  TransliterationType.values()[position]
+        transliterationType = types[position]
+        binding.tipText.htmlSpan(transliterationType.tip)
         transliterate()
     }
 
@@ -63,8 +67,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private fun transliterate() {
         val text = binding.inputField.text.toString()
-        val converted = TransliterationUtils.convert(text)
+        val converted = WordTransformation.transform(text, transliterationType)
         binding.outputField.setText(converted)
         shareProviderIntent?.putExtra(Intent.EXTRA_TEXT, converted)
+        binding.countText.text = "${converted.length}"
     }
 }

@@ -1,8 +1,9 @@
 package ua.bossly.tools.translit
 
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
+import kotlin.system.measureTimeMillis
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -11,28 +12,56 @@ import org.junit.Assert.*
  */
 class TransliterationUnitTest {
 
-    val origin = listOf(
-        "Андрій", "Богдан", "Жанна", "Наталія", "Петро", "Соломія", "Шевченко")
-    val passport_2010 = listOf(
-        "Andrii", "Bohdan", "Zhanna", "Nataliia", "Petro", "Solomiia", "Shevchenko")
-    val geographic_1996 = listOf(
-        "Andrii", "Bohdan", "Zhanna", "Nataliia", "Petro", "Solomiia", "Shevchenko")
+    private fun loadTable(path: String): List<List<String>> {
+        javaClass.getResourceAsStream(path)?.run {
+            return csvReader().readAll(this)
+        }
+
+        return listOf()
+    }
+
+    private fun assertTransformation(map: String, tests: String) {
+        val stream = javaClass.getResourceAsStream(map)!!
+        val transform = FileTransliteration(stream)
+        val table = loadTable(tests)
+
+        for (row in table) {
+            val origin = row[0]
+            val expected = row[1]
+            assertEquals(expected, WordTransformation.transform(origin, transform))
+        }
+    }
 
     @Test
     fun testPassport_2010() {
-        for (index in origin.indices) {
-            assertEquals(
-                passport_2010[index].toLowerCase(),
-                TransliterationUtils.convert(origin[index].toLowerCase()))
+        val time = measureTimeMillis {
+            assertTransformation("/passport_2010.csv", "/passport_2010_test.csv")
         }
+        println("measure: $time ms")
     }
 
     @Test
     fun testGeographic_1996() {
-        for (index in origin.indices) {
-            assertEquals(
-                geographic_1996[index].toLowerCase(),
-                TransliterationUtils.convert(origin[index].toLowerCase()))
+        val time = measureTimeMillis {
+            assertTransformation("/geographic_1996.csv", "/geographic_1996_test.csv")
         }
+        println("measure: $time ms")
     }
+
+    @Test
+    fun testAmerican() {
+        val time = measureTimeMillis {
+            assertTransformation("/american_1965.csv", "/american_1965_test.csv")
+        }
+        println("measure: $time ms")
+    }
+
+    @Test
+    fun testManifest() {
+        val time = measureTimeMillis {
+            assertTransformation("/manifest.csv", "/manifest_test.csv")
+        }
+        println("measure: $time ms")
+    }
+
 }
