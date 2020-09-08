@@ -12,9 +12,9 @@
         tools:context=".MainActivity">
 
         <TextView
-            android:text="Вибір:"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/type_select" />
 
         <Spinner
             android:id="@+id/selector"
@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:hint="Кирилиця" />
+            android:hint="@string/input_cyrillic" />
 
         <EditText
             android:textSize="32sp"
@@ -38,15 +38,16 @@
             android:layout_height="wrap_content"
             android:editable="false"
             android:focusable="false"
-            android:hint="Latin" />
+            android:hint="@string/input_latin" />
 
         <ua.bossly.tools.translit.TextView
+            android:id="@+id/tipText"
+            android:padding="8dp"
+            android:linksClickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorLink="@color/colorPrimary"
-            android:visibility="gone"
-            app:html="@string/tips"
-            tools:visibility="visible" />
+            tools:html="@string/tips_placeholder" />
 
     </LinearLayout>
 </layout>

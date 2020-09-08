@@ -7,7 +7,7 @@ import java.io.InputStream
  * Created on 08.09.2020.
  * Copyright by oleg
  */
-class FileTransliteration : WordTranform {
+class FileTransliteration : WordTransform {
 
     val rows: List<List<String>>
 

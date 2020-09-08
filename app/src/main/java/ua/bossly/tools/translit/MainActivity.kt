@@ -15,8 +15,8 @@ import ua.bossly.tools.translit.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var types: Array<WordTranform>
-    private lateinit var transliterationType: WordTranform
+    private lateinit var types: Array<WordTransform>
+    private lateinit var transliterationType: WordTransform
 
     private var shareProviderIntent: Intent? = null
 
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, itemId: Long) {
         transliterationType = types[position]
+        binding.tipText.htmlSpan(resources.getStringArray(R.array.tips)[position])
         transliterate()
     }
 

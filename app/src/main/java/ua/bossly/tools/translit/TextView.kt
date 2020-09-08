@@ -3,7 +3,7 @@ package ua.bossly.tools.translit
 import android.content.Context
 import android.os.Build
 import android.text.Html
-import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.util.Log
 import androidx.appcompat.widget.AppCompatTextView
@@ -12,7 +12,7 @@ import androidx.appcompat.widget.AppCompatTextView
  * Created on 08.09.2020.
  * Copyright by oleg
  */
-class TextView @JvmOverloads constructor(
+open class TextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -26,7 +26,7 @@ class TextView @JvmOverloads constructor(
 
             try {
                 getString(R.styleable.TextView_html)?.let {
-                    text = htmlSpan(it)
+                    htmlSpan(it)
                 }
             } finally {
                 recycle()
@@ -35,12 +35,13 @@ class TextView @JvmOverloads constructor(
     }
 
     @Suppress("DEPRECATION")
-    private fun htmlSpan(html: String): Spanned? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    fun htmlSpan(html: String) {
+        text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
         } else {
             Html.fromHtml(html)
         }
+        movementMethod = LinkMovementMethod.getInstance()
     }
 
     override fun performClick(): Boolean {
