@@ -15,8 +15,10 @@ import ua.bossly.tools.translit.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var types: Array<WordTranform>
+    private lateinit var transliterationType: WordTranform
+
     private var shareProviderIntent: Intent? = null
-    private var transliterationType = TransliterationType.PASSPORT_2010
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +29,15 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             transliterate()
         }
 
+        types = arrayOf(
+            FileTransliteration(resources.openRawResource(R.raw.passport_2010)),
+            FileTransliteration(resources.openRawResource(R.raw.geographic_1996)),
+            FileTransliteration(resources.openRawResource(R.raw.american_1965))
+        )
+        transliterationType = types.first()
         val arItems = resources.getStringArray(R.array.types)
-        val spinnerAdapter: ArrayAdapter<Any?> = ArrayAdapter(this,
+        val spinnerAdapter: ArrayAdapter<Any?> = ArrayAdapter(
+            this,
             android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, arItems
         )
         binding.selector.adapter = spinnerAdapter
@@ -38,12 +47,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         actionBar?.setDisplayUseLogoEnabled(true)
     }
 
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-        TODO("Not yet implemented")
-    }
+    override fun onNothingSelected(adapterView: AdapterView<*>?) {}
 
     override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, itemId: Long) {
-        transliterationType =  TransliterationType.values()[position]
+        transliterationType = types[position]
         transliterate()
     }
 
@@ -63,7 +70,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private fun transliterate() {
         val text = binding.inputField.text.toString()
-        val converted = TransliterationUtils.convert(text)
+        val converted = WordTransformation.transform(text, transliterationType)
         binding.outputField.setText(converted)
         shareProviderIntent?.putExtra(Intent.EXTRA_TEXT, converted)
     }

@@ -38,7 +38,15 @@
             android:layout_height="wrap_content"
             android:editable="false"
             android:focusable="false"
-            android:hint="Latin"/>
+            android:hint="Latin" />
+
+        <ua.bossly.tools.translit.TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorLink="@color/colorPrimary"
+            android:visibility="gone"
+            app:html="@string/tips"
+            tools:visibility="visible" />
 
     </LinearLayout>
 </layout>

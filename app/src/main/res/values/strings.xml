@@ -7,4 +7,9 @@
         <item>Американська (BGN/PCGN 1965)</item>
     </string-array>
 
+    <string name="tips"><![CDATA[
+        Відповідно до постанови <a href="https://zakon.rada.gov.ua/laws">Кабінету Міністрів України 2010 року</a>
+        ]]>
+    </string>
+
 </resources>
