@@ -15,8 +15,8 @@ android {
         applicationId "ua.bossly.tools.translit"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 3
-        versionName "1.1.0"
+        versionCode 1
+        versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,6 +36,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    sourceSets {
+        test {
+            resources.srcDirs += ['src/main/res/raw']
+        }
+    }
+    testOptions {
+        unitTests.includeAndroidResources = true
     }
 }
 

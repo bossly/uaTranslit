@@ -1,8 +1,8 @@
 package ua.bossly.tools.translit
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -20,19 +20,25 @@ class TransliterationUnitTest {
 
     @Test
     fun testPassport_2010() {
+        val stream = javaClass.getResourceAsStream("/passport_2010.csv")!!
+        val transform = FileTransliteration(stream)
         for (index in origin.indices) {
             assertEquals(
-                passport_2010[index].toLowerCase(),
-                TransliterationUtils.convert(origin[index].toLowerCase()))
+                passport_2010[index],
+                WordTransformation.transform(origin[index], transform)
+            )
         }
     }
 
     @Test
     fun testGeographic_1996() {
+        val stream = javaClass.getResourceAsStream("/geographic_1996.csv")!!
+        val transform = FileTransliteration(stream)
         for (index in origin.indices) {
             assertEquals(
-                geographic_1996[index].toLowerCase(),
-                TransliterationUtils.convert(origin[index].toLowerCase()))
+                geographic_1996[index],
+                WordTransformation.transform(origin[index], transform)
+            )
         }
     }
 }
