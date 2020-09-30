@@ -1,5 +1,6 @@
 package ua.bossly.tools.translit
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -11,12 +12,37 @@ import androidx.appcompat.widget.ShareActionProvider
 import androidx.core.view.MenuItemCompat
 import androidx.core.widget.addTextChangedListener
 import ua.bossly.tools.translit.databinding.ActivityMainBinding
+import java.io.InputStream
+
+object TransformTypes {
+    fun types(context: Context): Array<TransformType> {
+        return arrayOf(
+            TransformType(
+                context.resources.openRawResource(R.raw.passport_2010)
+            ),
+            TransformType(
+                context.resources.openRawResource(R.raw.geographic_1996)
+            ),
+            TransformType(
+                context.resources.openRawResource(R.raw.american_1965)
+            ),
+            TransformType(
+                context.resources.openRawResource(R.raw.manifest)
+            ),
+        )
+    }
+}
+
+class TransformType(stream: InputStream) : FileTransliteration(stream) {
+    var name: String = rows[0][0]
+    var tip: String = rows[0][1]
+}
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var types: Array<WordTransform>
-    private lateinit var transliterationType: WordTransform
+    private lateinit var types: Array<TransformType>
+    private lateinit var transliterationType: TransformType
 
     private var shareProviderIntent: Intent? = null
 
@@ -29,13 +55,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             transliterate()
         }
 
-        types = arrayOf(
-            FileTransliteration(resources.openRawResource(R.raw.passport_2010)),
-            FileTransliteration(resources.openRawResource(R.raw.geographic_1996)),
-            FileTransliteration(resources.openRawResource(R.raw.american_1965))
-        )
+        types = TransformTypes.types(this)
         transliterationType = types.first()
-        val arItems = resources.getStringArray(R.array.types)
+        val arItems = types.map { a -> a.name }
         val spinnerAdapter: ArrayAdapter<Any?> = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, arItems
@@ -51,7 +73,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, itemId: Long) {
         transliterationType = types[position]
-        binding.tipText.htmlSpan(resources.getStringArray(R.array.tips)[position])
+        binding.tipText.htmlSpan(transliterationType.tip)
         transliterate()
     }
 
