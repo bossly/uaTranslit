@@ -34,8 +34,8 @@ object TransformTypes {
 }
 
 class TransformType(stream: InputStream) : FileTransliteration(stream) {
-    var name: String = rows[0][0]
-    var tip: String = rows[0][1]
+    var name: String = rows[0][1]
+    var tip: String = rows[0][2]
 }
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
