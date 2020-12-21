@@ -5,7 +5,6 @@ import android.os.Build
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
-import android.util.Log
 import androidx.appcompat.widget.AppCompatTextView
 
 /**
@@ -42,10 +41,5 @@ open class TextView @JvmOverloads constructor(
             Html.fromHtml(html)
         }
         movementMethod = LinkMovementMethod.getInstance()
-    }
-
-    override fun performClick(): Boolean {
-        Log.d("TextView", "Clicked")
-        return super.performClick()
     }
 }

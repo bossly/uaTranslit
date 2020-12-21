@@ -43,19 +43,16 @@ open class FileTransliteration(stream: InputStream) : WordTransform {
             }
         }
 
-        when (position) {
+        result = when (position) {
             WordPosition.BEGIN -> {
                 if (start > 0 && rows[start][column].isNotEmpty()) {
-                    result =
-                        if (lowercase) rows[start][column] else rows[start][column].capitalize()
+                    if (lowercase) rows[start][column] else rows[start][column].capitalize()
                 } else {
-                    result =
-                        if (lowercase) rows[translit][column] else rows[translit][column].capitalize()
+                    if (lowercase) rows[translit][column] else rows[translit][column].capitalize()
                 }
             }
             else -> {
-                result =
-                    if (lowercase) rows[translit][column] else rows[translit][column].capitalize()
+                if (lowercase) rows[translit][column] else rows[translit][column].capitalize()
             }
         }
 

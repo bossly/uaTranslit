@@ -3,6 +3,9 @@
 
 [![Google Play](https://lh3.googleusercontent.com/qF9r3ZjtgG-qyHdmjecArtKiulz1gmwL_xl9R3_fzk6igSeoN0wYbJSKEX5d_fxJRwYZJpHbqcLB3i9atl-9dOfUl9an7U43TfZ9PtQ=s0)](https://play.google.com/store/apps/details?id=ua.bossly.tools.translit)
 
+| ![Primary screen](screens/screen1.png) | ![Secondary screen](screens/screen2.png) |
+|-|-|
+
 # Словники
 
 - [Паспортна (КМУ 2010)](http://latynka.tak.today/works/pasportnyj/) [закон](https://zakon.rada.gov.ua/laws/show/55-2010-%D0%BF#Text)
@@ -21,7 +24,7 @@
 |Ярошенко    |Yaroshenko   |
 |Костянтин   |Kostiantyn   |
 |Знам'янка   |Znamianka    |
-|Феодосія    |Feodosiia    |    
+|Феодосія    |Feodosiia    |
 
 - [Географічна (УКППТ 1996)](http://latynka.tak.today/works/ukppt-1996-spr/)
 
