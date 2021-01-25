@@ -70,5 +70,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val converted = WordTransformation.transform(text, transliterationType)
         binding.outputField.setText(converted)
         shareProviderIntent?.putExtra(Intent.EXTRA_TEXT, converted)
+        binding.countText.text = "${converted.length}"
     }
 }
