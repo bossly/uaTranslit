@@ -1,5 +1,6 @@
 package ua.bossly.tools.translit
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +12,31 @@ import androidx.appcompat.widget.ShareActionProvider
 import androidx.core.view.MenuItemCompat
 import androidx.core.widget.addTextChangedListener
 import ua.bossly.tools.translit.databinding.ActivityMainBinding
+import java.io.InputStream
+
+object TransformTypes {
+    fun types(context: Context): Array<TransformType> {
+        return arrayOf(
+            TransformType(
+                context.resources.openRawResource(R.raw.passport_2010)
+            ),
+            TransformType(
+                context.resources.openRawResource(R.raw.geographic_1996)
+            ),
+            TransformType(
+                context.resources.openRawResource(R.raw.american_1965)
+            ),
+            TransformType(
+                context.resources.openRawResource(R.raw.manifest)
+            ),
+        )
+    }
+}
+
+class TransformType(stream: InputStream) : FileTransliteration(stream) {
+    var name: String = rows[0][1]
+    var tip: String = rows[0][2]
+}
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
