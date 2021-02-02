@@ -1,0 +1,3 @@
+App to translit cyrilic phrases to latin using commonly used translation rules.
+
+Project is open-source: https://github.com/bossly/uaTranslit
