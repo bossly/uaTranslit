@@ -25,22 +25,15 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.inputField.addTextChangedListener {
-            transliterate()
+        setupViews()
+
+        when (intent.action) {
+            Intent.ACTION_SEND -> {
+                intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
+                    binding.inputField.setText(text)
+                }
+            }
         }
-
-        types = TransformTypes.types(this)
-        transliterationType = types.first()
-        val arItems = types.map { a -> a.name }
-        val spinnerAdapter: ArrayAdapter<Any?> = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, arItems
-        )
-        binding.selector.adapter = spinnerAdapter
-        binding.selector.onItemSelectedListener = this
-
-        actionBar?.setDisplayShowTitleEnabled(false)
-        actionBar?.setDisplayUseLogoEnabled(true)
     }
 
     override fun onNothingSelected(adapterView: AdapterView<*>?) {}
@@ -63,6 +56,25 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setupViews() {
+        binding.inputField.addTextChangedListener {
+            transliterate()
+        }
+
+        types = TransformTypes.types(this)
+        transliterationType = types.first()
+        val arItems = types.map { a -> a.name }
+        val spinnerAdapter: ArrayAdapter<Any?> = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, arItems
+        )
+        binding.selector.adapter = spinnerAdapter
+        binding.selector.onItemSelectedListener = this
+
+        actionBar?.setDisplayShowTitleEnabled(false)
+        actionBar?.setDisplayUseLogoEnabled(true)
     }
 
     private fun transliterate() {

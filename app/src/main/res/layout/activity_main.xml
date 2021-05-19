@@ -2,63 +2,71 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:padding="20dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
+        android:layout_height="match_parent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/type_select" />
-
-        <Spinner
-            android:id="@+id/selector"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            tools:prompt="Passport" />
-
-        <EditText
-            android:textSize="32sp"
-            android:id="@+id/inputField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:hint="@string/input_cyrillic" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/outputField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:editable="false"
-                android:focusable="false"
-                android:hint="@string/input_latin"
-                android:textSize="32sp" />
+            android:orientation="vertical"
+            android:padding="20dp"
+            tools:context=".MainActivity">
 
             <TextView
-                android:id="@+id/countText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                tools:text="10" />
+                android:text="@string/type_select" />
 
-        </FrameLayout>
+            <Spinner
+                android:id="@+id/selector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                tools:prompt="Passport" />
 
-        <ua.bossly.tools.translit.TextView
-            android:id="@+id/tipText"
-            android:padding="8dp"
-            android:linksClickable="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorLink="@color/colorPrimary"
-            tools:html="@string/tips_placeholder" />
+            <EditText
+                android:id="@+id/inputField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:inputType="textMultiLine"
+                android:hint="@string/input_cyrillic"
+                android:textSize="32sp" />
 
-    </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/outputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:hint="@string/input_latin"
+                    android:textSize="32sp" />
+
+                <TextView
+                    android:id="@+id/countText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    tools:text="10" />
+
+            </FrameLayout>
+
+            <ua.bossly.tools.translit.TextView
+                android:id="@+id/tipText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:linksClickable="true"
+                android:padding="8dp"
+                android:textColorLink="@color/colorPrimary"
+                tools:html="@string/tips_placeholder" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </layout>
