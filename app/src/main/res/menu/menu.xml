@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/copyButton"
+        android:title="@string/menu_copy"
+        android:icon="@drawable/ic_copy"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/shareButton"
-        android:title="Share"
+        android:title="@string/menu_share"
         app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"
         app:showAsAction="always" />
 

@@ -3,4 +3,7 @@
     <string name="type_select">Вибір:</string>
     <string name="input_cyrillic">Кирилиця</string>
     <string name="input_latin">Latin</string>
+    <string name="menu_copy">Скопіювати</string>
+    <string name="menu_share">Поділитись</string>
+    <string name="clipboard_copied">Скопіювано в буфер обміну</string>
 </resources>

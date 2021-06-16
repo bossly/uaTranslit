@@ -1,11 +1,15 @@
 package ua.bossly.tools.translit
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.ShareActionProvider
 import androidx.core.view.MenuItemCompat
@@ -56,6 +60,24 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.copyButton -> copyToClipboard()
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun copyToClipboard() {
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val text = binding.inputField.text.toString()
+        val converted = WordTransformation.transform(text, transliterationType)
+        val clip = ClipData.newPlainText(getString(R.string.app_name), converted)
+        clipboard.setPrimaryClip(clip)
+
+        Toast.makeText(this, R.string.clipboard_copied, Toast.LENGTH_SHORT).show()
     }
 
     private fun setupViews() {
