@@ -16,8 +16,19 @@
 default_platform(:android)
 
 platform :android do
-  desc "Description of what the lane does"
-  lane :custom_lane do
-    # add actions here: https://docs.fastlane.tools/actions
+
+  desc "Capture screenshots"
+  lane :screenshots do
+    gradle(task: "assembleDebug")
+    gradle(task: "assembleDebugAndroidTest")
+    capture_android_screenshots(
+      locales: ["uk", "en"],
+      app_package_name: "ua.bossly.tools.translit.dev",
+      app_apk_path: "app/build/outputs/apk/debug/app-debug.apk",
+      tests_apk_path: "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      exit_on_test_failure: false,
+      use_timestamp_suffix: false
+    )
   end
+
 end
