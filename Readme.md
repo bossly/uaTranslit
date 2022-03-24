@@ -3,6 +3,8 @@
 [![Actions Status](https://github.com/bossly/uaTranslit/workflows/Android%20CI/badge.svg)](https://github.com/bossly/uaTranslit/actions) [![The most recent tag](https://img.shields.io/github/v/release/bossly/uaTranslit.svg?logo=github)](https://github.com/bossly/uaTranslit/tags) 
 [![Build status](https://build.appcenter.ms/v0.1/apps/22ace498-b39a-4284-ac20-1592995ff741/branches/master/badge)](https://play.google.com/store/apps/details?id=ua.bossly.tools.translit) [![The most recent F-Droid version](https://img.shields.io/f-droid/v/ua.bossly.tools.translit.svg)](https://f-droid.org/en/packages/ua.bossly.tools.translit/)
 
+__Хочете допомогти? [Задонатити](https://send.monobank.ua/jar/4qhFtZFqTc)__
+
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/ua.bossly.tools.translit/)
