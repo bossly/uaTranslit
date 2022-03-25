@@ -33,13 +33,8 @@ open class TextView @JvmOverloads constructor(
         }
     }
 
-    @Suppress("DEPRECATION")
     fun htmlSpan(html: String) {
-        text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            Html.fromHtml(html)
-        }
+        text = Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
         movementMethod = LinkMovementMethod.getInstance()
     }
 }

@@ -3,6 +3,7 @@ package ua.bossly.tools.translit
 import android.os.Bundle
 import android.util.Log
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -42,10 +43,14 @@ class MainActivityInstrumentedTest {
     }
 
     @Test
-    fun mainScreen() {
+    fun homeScreen() {
         // if selector presented
         onView(withId(android.R.id.text1)).check(matches(isDisplayed()))
+        Screengrab.screenshot("screen1")
+    }
 
+    @Test
+    fun makeTranslit() {
         // enter the text
         onView(withId(R.id.inputField)).perform(
             ViewActions.replaceText("Тарас Бульба"),
@@ -54,7 +59,12 @@ class MainActivityInstrumentedTest {
 
         // check result text changed
         onView(withId(R.id.outputField)).check(matches(withText("Taras Bulba")))
+        Screengrab.screenshot("screen2")
+    }
 
-        Screengrab.screenshot("home")
+    @Test
+    fun showSelector() {
+        onView(withId(R.id.selector)).perform(ViewActions.click())
+        Screengrab.screenshot("screen3")
     }
 }

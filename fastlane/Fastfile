@@ -22,13 +22,26 @@ platform :android do
     gradle(task: "assembleDebug")
     gradle(task: "assembleDebugAndroidTest")
     capture_android_screenshots(
-      locales: ["uk", "en"],
+      locales: ["en-US"],
       app_package_name: "ua.bossly.tools.translit.dev",
       app_apk_path: "app/build/outputs/apk/debug/app-debug.apk",
       tests_apk_path: "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
       exit_on_test_failure: false,
       use_timestamp_suffix: false
     )
+    frame_screenshots
+  end
+
+  lane :frame do
+    frame_screenshots(
+      path: './fastlane/metadata/android/en-US/images'
+    )
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
   end
 
 end
