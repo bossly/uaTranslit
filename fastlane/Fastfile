@@ -17,8 +17,14 @@ default_platform(:android)
 
 platform :android do
 
+  desc "Run unit tests"
+  lane :unit_test do
+    gradle(task: "assembleDebug")
+    gradle(task: "assembleDebugUnitTest")
+  end
+
   desc "Capture screenshots"
-  lane :screenshots do
+  lane :screenshots do    
     gradle(task: "assembleDebug")
     gradle(task: "assembleDebugAndroidTest")
     capture_android_screenshots(
