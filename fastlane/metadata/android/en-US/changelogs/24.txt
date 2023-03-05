@@ -1,0 +1,4 @@
+feature: updated share action
+feature: support dark mode
+fix: cursor not visible
+fix: orthography checks off for output field

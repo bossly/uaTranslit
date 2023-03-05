@@ -1,0 +1,20 @@
+{
+  "device_frame_version": "latest",
+  "default": {
+    "title": {
+      "color": "#000000",
+      "font_scale_factor": 1.5,
+      "font_weight": 900
+    },
+    "padding": "5%x40",
+    "background": "background.jpeg",
+    "frame": "WHITE",
+    "use_platform": "ANDROID"
+  },
+  "data": [
+    {
+      "filter": "screen2",
+      "title_below_image": true
+    }
+  ]
+}
