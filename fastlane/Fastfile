@@ -21,8 +21,8 @@ platform :android do
 
   desc "Run unit tests"
   lane :unit_test do
-    executeGradle("assembleDebug")
-    executeGradle("assembleDebugUnitTest")
+    gradle(task: "assembleDebug")
+    gradle(task: "assembleDebugUnitTest")
   end
 
   desc "Capture screenshots"
