@@ -1,7 +1,7 @@
-name: Pull request
+name: Generate Android Artifact
 
 on:
-  pull_request:
+  push:
     branches: [ master ]
 
 env:
@@ -9,7 +9,7 @@ env:
 
 jobs:
   build:
-    name: Build and running Unit Tests
+    name: Setup Environment and build
     runs-on: ubuntu-latest
 
     timeout-minutes: 45
@@ -22,6 +22,9 @@ jobs:
         with:
           java-version: 11
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
       - name: Cache gradle
         uses: actions/cache@v1
         with:
@@ -30,16 +33,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Run Unit Tests
-        uses: maierj/fastlane-action@v1.4.0
-        env:
-          APP_BUILD_NUMBER: ${{ env.GITHUB_RUN_ID }}
-          APP_VERSION_CODE: ${{ github.run_number }}
-        with:
-          lane: unit_test
-          skip-tracking: false
-          subdirectory: fastlane
-          bundle-install-path: CACHE_BUNDLER
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Generate app APK.
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload Bundle
         uses: actions/upload-artifact@v2
