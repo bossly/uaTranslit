@@ -16,13 +16,13 @@ jobs:
       - name: Create release.keystore
         env:
           AUTH: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-        run: echo $AUTH | base64 --decode > release.keystore
+        run: echo $AUTH | base64 --decode > /tmp/release.keystore
         shell: bash
 
       - name: Publish to Google Play
         uses: maierj/fastlane-action@v1.4.0
         env:
-          APP_SIGN_KEYSTORE_PATH: ${{ steps.android_keystore.outputs.filePath }}
+          APP_SIGN_KEYSTORE_PATH: /tmp/release.keystore
           APP_SIGN_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           APP_SIGN_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           APP_SIGN_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
