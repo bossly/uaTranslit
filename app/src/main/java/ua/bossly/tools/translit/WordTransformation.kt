@@ -9,6 +9,7 @@ enum class WordPosition {
 }
 
 interface WordTransform {
+    fun snapSeparator(): String
     fun convert(char: Char, next: Char?, position: WordPosition): WordSnap
 }
 
@@ -44,7 +45,7 @@ object WordTransformation {
                 }
             }
 
-            transformed.add(chars.joinToString(""))
+            transformed.add(chars.joinToString(transform.snapSeparator()))
         }
 
         // 3. combine words into sentence

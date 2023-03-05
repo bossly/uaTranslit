@@ -64,4 +64,12 @@ class TransliterationUnitTest {
         println("measure: $time ms")
     }
 
+    @Test
+    fun testMorze() {
+        val time = measureTimeMillis {
+            assertTransformation("/morze.csv", "/morze_test.csv")
+        }
+        println("measure: $time ms")
+    }
+
 }
