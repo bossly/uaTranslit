@@ -1,0 +1,42 @@
+name: Android CI
+
+on:
+  pull_request:
+    branches: [ master ]
+
+env:
+  CACHE_BUNDLER: ~/.bundler
+
+jobs:
+  build:
+    name: Build and running Unit Tests
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 45
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run Unit Tests
+        uses: maierj/fastlane-action@v1.4.0
+        env:
+          APP_BUILD_NUMBER: ${{ env.GITHUB_RUN_ID }}
+          APP_VERSION_CODE: ${{ github.run_number }}
+        with:
+          lane: unit_test
+          skip-tracking: false
+          subdirectory: fastlane
+          bundle-install-path: CACHE_BUNDLER

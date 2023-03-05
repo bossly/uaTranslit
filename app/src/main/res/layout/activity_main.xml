@@ -1,17 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:elevation="10dp"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foregroundTint="?attr/colorOnPrimary"
+            app:menu="@menu/menu"
+            app:title="@string/app_name"
+            app:titleTextColor="?attr/colorOnPrimary" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            tools:context=".MainActivity">
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -30,8 +53,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:inputType="textMultiLine"
+                android:importantForAutofill="no"
                 android:hint="@string/input_cyrillic"
+                android:inputType="textMultiLine"
                 android:textSize="32sp" />
 
             <FrameLayout
@@ -42,9 +66,10 @@
                     android:id="@+id/outputField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
                     android:focusable="false"
                     android:hint="@string/input_latin"
+                    android:importantForAutofill="no"
+                    android:inputType="none|textMultiLine|textNoSuggestions"
                     android:textSize="32sp" />
 
                 <TextView
@@ -69,4 +94,4 @@
 
     </ScrollView>
 
-</layout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

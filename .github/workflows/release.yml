@@ -1,0 +1,26 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Publish to Google Play
+        uses: maierj/fastlane-action@v1.4.0
+        env:
+          APP_BUILD_NUMBER: ${{ github.GITHUB_RUN_ID }}
+          APP_VERSION_CODE: ${{ github.ref }}
+          SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        with:
+          lane: deploy
+          skip-tracking: false
+          subdirectory: fastlane
+          bundle-install-path: CACHE_BUNDLER

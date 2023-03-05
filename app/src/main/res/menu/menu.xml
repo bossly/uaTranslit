@@ -9,9 +9,9 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:icon="@drawable/ic_share"
         android:id="@+id/shareButton"
         android:title="@string/menu_share"
-        app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"
         app:showAsAction="always" />
 
 </menu>

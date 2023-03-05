@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane android unit_test
 ```
 
-run unit tests
+Run unit tests
 
 ### android screenshots
 
@@ -30,14 +30,6 @@ run unit tests
 ```
 
 Capture screenshots
-
-### android frame
-
-```sh
-[bundle exec] fastlane android frame
-```
-
-
 
 ### android deploy
 
