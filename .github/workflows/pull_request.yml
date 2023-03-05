@@ -1,4 +1,4 @@
-name: Android CI
+name: Pull request
 
 on:
   pull_request:
@@ -40,3 +40,9 @@ jobs:
           skip-tracking: false
           subdirectory: fastlane
           bundle-install-path: CACHE_BUNDLER
+
+      - name: Upload Bundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: android_debug_apk_${{ github.run_number }}.zip
+          path: app/build/outputs/apk/debug/app-debug.apk

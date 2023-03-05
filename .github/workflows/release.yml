@@ -3,7 +3,7 @@ name: Create Release
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
 
 jobs:
   build:
@@ -13,11 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create release.keystore
+        env:
+          AUTH: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: echo $AUTH | base64 --decode > release.keystore
+        shell: bash
+
       - name: Publish to Google Play
         uses: maierj/fastlane-action@v1.4.0
         env:
-          APP_BUILD_NUMBER: ${{ github.GITHUB_RUN_ID }}
-          APP_VERSION_CODE: ${{ github.ref }}
+          APP_SIGN_KEYSTORE_PATH: ${{ steps.android_keystore.outputs.filePath }}
+          APP_SIGN_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          APP_SIGN_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          APP_SIGN_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          APP_VERSION_NAME: ${{ github.ref }}
+          APP_VERSION_CODE: ${{ github.GITHUB_RUN_ID }}
           SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         with:
           lane: deploy

@@ -12,14 +12,14 @@ android {
         applicationId "ua.bossly.tools.translit"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName '1.4.0'
+        versionCode 36
+        versionName '1.4.1'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
