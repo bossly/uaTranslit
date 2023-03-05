@@ -4,6 +4,10 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 
+def keystorePropertiesFile = rootProject.file("./keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     namespace 'ua.bossly.tools.translit'
     compileSdk 33
@@ -12,15 +16,24 @@ android {
         applicationId "ua.bossly.tools.translit"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName '1.4.0'
+        versionCode 36
+        versionName '1.4.1'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             applicationIdSuffix '.dev'
