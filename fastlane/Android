@@ -1,0 +1,12 @@
+# Lanes that execute gradle tasks, including reading gradle properties
+
+def executeGradle(task)
+    puts "Task -> " + task
+    properties = {
+        "android.injected.signing.key.alias" => ENV["APP_SIGN_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["APP_SIGN_KEY_PASSWORD"],
+        "android.injected.signing.store.file" => ENV["APP_SIGN_KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["APP_SIGN_STORE_PASSWORD"],
+    }
+    gradle(task: task, properties: properties, flags: "-S")
+end

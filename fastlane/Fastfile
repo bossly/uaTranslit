@@ -15,18 +15,19 @@
 
 default_platform(:android)
 
+import("Android")
+
 platform :android do
 
   desc "Run unit tests"
   lane :unit_test do
-    gradle(task: "assembleDebug")
-    gradle(task: "assembleDebugUnitTest")
+    executeGradle("assembleDebug")
+    executeGradle("assembleDebugUnitTest")
   end
 
   desc "Capture screenshots"
-  lane :screenshots do    
-    gradle(task: "assembleDebug")
-    gradle(task: "assembleDebugAndroidTest")
+  lane :screenshots do
+    unit_test
     capture_android_screenshots(
       locales: ["en-US", "uk"],
       app_package_name: "ua.bossly.tools.translit.dev",
@@ -40,11 +41,9 @@ platform :android do
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    gradle(task: "assembleRelease")
+    executeGradle("assembleRelease")
 
     upload_to_play_store(
-        version_name: ENV["APP_BUILD_NUMBER"],
-        version_code: ENV["APP_VERSION_CODE"],
         json_key_data: ENV["SUPPLY_JSON_KEY_DATA"]
     )
   end
