@@ -1,6 +1,6 @@
 # Транслітерація - тексту кирилиці в латиницю.
 
-[![Actions Status]([https://github.com/bossly/uaTranslit/workflows/Android%20CI/badge.svg](https://github.com/bossly/uaTranslit/workflows/Create%20Release/badge.svg))](https://github.com/bossly/uaTranslit/actions)
+[![Actions Status](https://github.com/bossly/uaTranslit/workflows/Create%20Release/badge.svg)](https://github.com/bossly/uaTranslit/actions)
 [![The most recent tag](https://img.shields.io/github/v/release/bossly/uaTranslit.svg?logo=github)](https://github.com/bossly/uaTranslit/tags)
 [![The most recent F-Droid version](https://img.shields.io/f-droid/v/ua.bossly.tools.translit.svg)](https://f-droid.org/en/packages/ua.bossly.tools.translit/)
 [![Privacy Policy](https://img.shields.io/static/v1?label=Privacy%20Policy&message=read&color=blueviolet)](https://github.com/bossly/uaTranslit/blob/master/PRIVACY.md)
