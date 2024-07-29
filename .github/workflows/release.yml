@@ -20,7 +20,7 @@ jobs:
         shell: bash
 
       - name: Publish to Google Play
-        uses: maierj/fastlane-action@v1.4.0
+        uses: maierj/fastlane-action@v3.1.0
         env:
           APP_SIGN_KEYSTORE_PATH: /tmp/release.keystore
           APP_SIGN_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
