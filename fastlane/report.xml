@@ -3,27 +3,27 @@
   <testsuite name="fastlane.lanes">
 
 
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000249">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000202">
 
       </testcase>
 
 
-      <testcase classname="fastlane.lanes" name="1: assembleDebug" time="3.036047">
+      <testcase classname="fastlane.lanes" name="1: assembleDebug" time="1.021582">
 
       </testcase>
 
 
-      <testcase classname="fastlane.lanes" name="2: assembleDebugAndroidTest" time="1.336044">
+      <testcase classname="fastlane.lanes" name="2: assembleDebugAndroidTest" time="1.333333">
 
       </testcase>
 
 
-      <testcase classname="fastlane.lanes" name="3: capture_android_screenshots" time="3.428217">
+      <testcase classname="fastlane.lanes" name="3: capture_android_screenshots" time="10.411007">
 
       </testcase>
 
 
-      <testcase classname="fastlane.lanes" name="4: frame_screenshots" time="24.009714">
+      <testcase classname="fastlane.lanes" name="4: frame_screenshots" time="0.018285">
 
       </testcase>
 

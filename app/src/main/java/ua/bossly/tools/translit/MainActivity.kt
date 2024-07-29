@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -167,10 +168,11 @@ fun HomeView(viewModel: HomeViewModel = HomeViewModel()) {
                             )
                             .padding(16.dp)
                             .fillMaxWidth()
+                            .testTag("selector")
                     )
                     DropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false },
+                        onDismissRequest = { expanded = false }
                     ) {
                         viewModel.types(context).forEach { item ->
                             DropdownMenuItem(text = { Text(text = item.name) }, onClick = {
@@ -189,12 +191,16 @@ fun HomeView(viewModel: HomeViewModel = HomeViewModel()) {
                     }, // Implement logic here
                     label = { Text(text = stringResource(id = R.string.input_cyrillic)) },
                     maxLines = Int.MAX_VALUE,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("input")
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Box {
                         OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("output"),
                             value = outputText,
                             onValueChange = {}, // Implement logic here
                             label = { Text(text = stringResource(id = R.string.input_latin)) },
