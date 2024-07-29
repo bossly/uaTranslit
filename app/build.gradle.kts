@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "ua.bossly.tools.translit"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 34
         versionCode = 36
         versionName = "1.4.1"

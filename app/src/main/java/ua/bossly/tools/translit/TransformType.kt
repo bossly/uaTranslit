@@ -27,6 +27,9 @@ object TransformTypes {
             TransformType(
                 context.resources.openRawResource(R.raw.manifest)
             ),
+            TransformType(
+                context.resources.openRawResource(R.raw.morze)
+            ),
         )
     }
 }
