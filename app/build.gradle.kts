@@ -11,7 +11,7 @@ android {
         applicationId = "ua.bossly.tools.translit"
         minSdk = 31
         targetSdk = 34
-        versionCode = 36
+        versionCode = 37
         versionName = "1.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
