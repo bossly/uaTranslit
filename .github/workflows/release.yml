@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - '*'
+    branches:
+      - 'release/*'
 
 jobs:
   build:
@@ -18,6 +20,12 @@ jobs:
           AUTH: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: echo $AUTH | base64 --decode > /tmp/release.keystore
         shell: bash
+
+      - name: Setup bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
 
       - name: Publish to Google Play
         uses: maierj/fastlane-action@v3.1.0
