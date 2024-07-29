@@ -31,6 +31,4 @@ jobs:
           SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         with:
           lane: deploy
-          skip-tracking: false
           subdirectory: fastlane
-          bundle-install-path: CACHE_BUNDLER
