@@ -39,4 +39,4 @@ jobs:
           SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         with:
           lane: deploy
-          subdirectory: fastlane
+#          subdirectory: fastlane
