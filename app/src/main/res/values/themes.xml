@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.Transliteration" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <!-- Secondary brand color. -->
+        <item name="android:textColorSecondary">@color/black</item>
+    </style>
+</resources>

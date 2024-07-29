@@ -1,9 +1,11 @@
 # Транслітерація - тексту кирилиці в латиницю.
 
-[![Actions Status](https://github.com/bossly/uaTranslit/workflows/Android%20CI/badge.svg)](https://github.com/bossly/uaTranslit/actions) [![The most recent tag](https://img.shields.io/github/v/release/bossly/uaTranslit.svg?logo=github)](https://github.com/bossly/uaTranslit/tags) 
-[![Build status](https://build.appcenter.ms/v0.1/apps/22ace498-b39a-4284-ac20-1592995ff741/branches/master/badge)](https://play.google.com/store/apps/details?id=ua.bossly.tools.translit) [![The most recent F-Droid version](https://img.shields.io/f-droid/v/ua.bossly.tools.translit.svg)](https://f-droid.org/en/packages/ua.bossly.tools.translit/)
+[![Actions Status](https://github.com/bossly/uaTranslit/workflows/Android%20CI/badge.svg)](https://github.com/bossly/uaTranslit/actions)
+[![The most recent tag](https://img.shields.io/github/v/release/bossly/uaTranslit.svg?logo=github)](https://github.com/bossly/uaTranslit/tags)
+[![The most recent F-Droid version](https://img.shields.io/f-droid/v/ua.bossly.tools.translit.svg)](https://f-droid.org/en/packages/ua.bossly.tools.translit/)
 [![Privacy Policy](https://img.shields.io/static/v1?label=Privacy%20Policy&message=read&color=blueviolet)](https://github.com/bossly/uaTranslit/blob/master/PRIVACY.md)
-[![API](https://img.shields.io/badge/API-24%2B-orange.svg?logo=android)](https://android-arsenal.com/api?level=24) [![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
+[![API](https://img.shields.io/badge/API-24%2B-orange.svg?logo=android)](https://android-arsenal.com/api?level=24)
+[![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 
 __Хочете допомогти? [Задонатити](https://send.monobank.ua/jar/4qhFtZFqTc)__
 
@@ -15,7 +17,7 @@ __Хочете допомогти? [Задонатити](https://send.monobank.
      height="80">](https://play.google.com/store/apps/details?id=ua.bossly.tools.translit)
 
 | ![Primary screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen1.png) | ![Secondary screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen2.png) | ![Third screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen3.png) |
-|-|-|-|
+|----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
 
 ## Словники
 
@@ -23,19 +25,19 @@ __Хочете допомогти? [Задонатити](https://send.monobank.
 
 Приклади:
 
-| Оригінал   | Трансліт    |
-| ---------- | ----------- |
-|Алушта      |Alushta      |
-|Андрій      |Andrii       |
-|Борщагівка  |Borshchahivka|
-|Згурський   |Zghurskyi    |
-|Ґалаґан     |Galagan      |
-|Ґорґани     |Gorgany      |
-|Донецьк     |Donetsk      |
-|Ярошенко    |Yaroshenko   |
-|Костянтин   |Kostiantyn   |
-|Знам'янка   |Znamianka    |
-|Феодосія    |Feodosiia    |
+| Оригінал   | Трансліт      |
+|------------|---------------|
+| Алушта     | Alushta       |
+| Андрій     | Andrii        |
+| Борщагівка | Borshchahivka |
+| Згурський  | Zghurskyi     |
+| Ґалаґан    | Galagan       |
+| Ґорґани    | Gorgany       |
+| Донецьк    | Donetsk       |
+| Ярошенко   | Yaroshenko    |
+| Костянтин  | Kostiantyn    |
+| Знам'янка  | Znamianka     |
+| Феодосія   | Feodosiia     |
 
 - [Географічна (УКППТ 1996)](http://latynka.tak.today/works/ukppt-1996-spr/)
 

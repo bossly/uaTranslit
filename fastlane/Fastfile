@@ -27,7 +27,9 @@ platform :android do
 
   desc "Capture screenshots"
   lane :screenshots do
-    unit_test
+    gradle(task: "assembleDebug")
+    gradle(task: "assembleDebugAndroidTest")
+
     capture_android_screenshots(
       locales: ["en-US", "uk"],
       app_package_name: "ua.bossly.tools.translit.dev",
