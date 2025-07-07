@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace = "ua.bossly.tools.translit"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "ua.bossly.tools.translit"
         minSdk = 31
-        targetSdk = 34
-        versionCode = 37
-        versionName = "1.5.0"
+        targetSdk = 35
+        versionCode = 38
+        versionName = "1.5.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
