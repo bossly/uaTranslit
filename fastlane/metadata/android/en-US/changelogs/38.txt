@@ -1,0 +1,2 @@
+chore: Target Android 15 (API 35)
+chore: Bump version to 1.5.1
