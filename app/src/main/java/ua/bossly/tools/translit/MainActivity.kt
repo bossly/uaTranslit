@@ -3,12 +3,14 @@ package ua.bossly.tools.translit
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -99,25 +101,104 @@ fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
 }
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val TAG = "MainActivity"
+        const val EXTRA_INITIAL_TEXT = "initial_text"
+        const val EXTRA_FEATURE = "feature"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Handle App Actions and deep links
+        val initialData = handleIntent(intent)
+        
         setContent {
             UaTranslitTheme {
-                HomeView()
+                HomeView(
+                    initialText = initialData.first,
+                    initialFeature = initialData.second
+                )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            setIntent(it)
+            // Handle new intent data if needed
+            val intentData = handleIntent(it)
+            Log.d(TAG, "New intent received with text: ${intentData.first}, feature: ${intentData.second}")
+        }
+    }
+
+    private fun handleIntent(intent: Intent): Pair<String, String> {
+        var initialText = ""
+        var feature = ""
+
+        when (intent.action) {
+            Intent.ACTION_SEND -> {
+                // Handle shared text
+                if (intent.type == "text/plain") {
+                    initialText = intent.getStringExtra(Intent.EXTRA_TEXT) ?: ""
+                    Log.d(TAG, "Received shared text: $initialText")
+                }
+            }
+            Intent.ACTION_VIEW -> {
+                // Handle deep links from App Actions
+                val data: Uri? = intent.data
+                data?.let { uri ->
+                    Log.d(TAG, "Received deep link: $uri")
+                    when (uri.host) {
+                        "open" -> {
+                            feature = uri.getQueryParameter("feature") ?: ""
+                            Log.d(TAG, "Open feature: $feature")
+                        }
+                        "transliterate" -> {
+                            initialText = uri.getQueryParameter("text") ?: ""
+                            feature = "transliterate"
+                            Log.d(TAG, "Transliterate text: $initialText")
+                        }
+                        else -> {
+                            Log.d(TAG, "Unknown deep link host: ${uri.host}")
+                        }
+                    }
+                }
+            }
+            else -> {
+                Log.d(TAG, "Unhandled intent action: ${intent.action}")
+            }
+        }
+
+        return Pair(initialText, feature)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView(viewModel: HomeViewModel = HomeViewModel()) {
+fun HomeView(
+    viewModel: HomeViewModel = HomeViewModel(),
+    initialText: String = "",
+    initialFeature: String = ""
+) {
     val context = LocalContext.current
-    var inputText by remember { mutableStateOf("") }
+    var inputText by remember { mutableStateOf(initialText) }
     var outputText by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(viewModel.types(context).first()) }
+
+    // Process initial text if provided
+    if (initialText.isNotEmpty() && inputText.isEmpty()) {
+        inputText = initialText
+        outputText = WordTransformation.transform(initialText, selectedItem)
+    }
+    
+    // Log initial feature for debugging App Actions
+    if (initialFeature.isNotEmpty()) {
+        Log.d("HomeView", "Initial feature requested: $initialFeature")
+    }
 
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(

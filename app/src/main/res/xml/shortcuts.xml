@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="transliterate"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/app_name"
+        android:shortcutLongLabel="@string/shortcut_transliterate_long">
+        
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="uatranslit://open?feature=transliterate" />
+            
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

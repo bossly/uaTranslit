@@ -1,0 +1,4 @@
+feat: App Actions integration with Google Assistant
+feat: Deep link support for voice commands 
+feat: Enhanced sharing capabilities
+chore: Updated version to 1.6.0

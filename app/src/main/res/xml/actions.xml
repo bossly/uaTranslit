@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<actions>
+    <!-- Entity set for transliteration features -->
+    <entity-set entitySetId="TransliterationFeature">
+        <entity name="transliterate" identifier="transliterate">
+            <synonym name="@string/app_name" />
+            <synonym name="transliterate" />
+            <synonym name="convert" />
+            <synonym name="transform" />
+        </entity>
+    </entity-set>
+
+    <!-- Open the app with a specific feature -->
+    <action intentName="actions.intent.OPEN_APP_FEATURE">
+        <parameter name="feature">
+            <entity-set-reference entitySetId="TransliterationFeature" />
+        </parameter>
+        <fulfillment urlTemplate="uatranslit://open?feature={feature}" />
+    </action>
+    
+    <!-- Handle text processing/transliteration -->
+    <action intentName="actions.intent.CREATE_THING">
+        <parameter name="thing.name" />
+        <parameter name="thing.text" />
+        <fulfillment urlTemplate="uatranslit://transliterate?text={thing.text}" />
+    </action>
+    
+    <!-- Direct text transliteration -->
+    <action intentName="actions.intent.TRANSLATE_TEXT">
+        <parameter name="text" />
+        <fulfillment urlTemplate="uatranslit://transliterate?text={text}" />
+    </action>
+</actions>

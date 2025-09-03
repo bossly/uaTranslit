@@ -6,4 +6,5 @@
     <string name="menu_copy">Скопіювати</string>
     <string name="menu_share">Поділитись</string>
     <string name="clipboard_copied">Скопіювано в буфер обміну</string>
+    <string name="shortcut_transliterate_long">Транслітерувати текст</string>
 </resources>

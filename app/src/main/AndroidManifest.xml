@@ -27,7 +27,30 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
+            <!-- Deep link handling for App Actions -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="uatranslit" android:host="open" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="uatranslit" android:host="transliterate" />
+            </intent-filter>
         </activity>
+        
+        <!-- App Actions metadata -->
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/actions" />
+            
+        <!-- App shortcuts for Assistant discovery -->
+        <meta-data
+            android:name="android.app.shortcuts"
+            android:resource="@xml/shortcuts" />
     </application>
 
 </manifest>
