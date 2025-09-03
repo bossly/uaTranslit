@@ -30,7 +30,7 @@ open class FileTransliteration(stream: InputStream) : WordTransform {
         }
 
         val combine = (charLowercase + next.toString().lowercase(Locale.getDefault())).trim()
-        var result = ""
+        var result: String
 
         if (combine.length == 2) {
             val combIndex = rows[origin].indexOf(combine)
