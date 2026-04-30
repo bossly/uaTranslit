@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Трансліт</string>
+    <string name="type_select">Вибір:</string>
+    <string name="input_cyrillic">Кирилиця</string>
+    <string name="input_latin">Латиниця</string>
+    <string name="menu_copy">Скопіювати</string>
+    <string name="menu_share">Поділитись</string>
+    <string name="clipboard_copied">Скопіковано в буфер обміну</string>
+    <string name="shortcut_transliterate_long">Транслітерувати текст</string>
+    <string name="save_to_history">Зберегти в історію</string>
+    <string name="history_title">Історія</string>
+    <string name="no_history_found">Немає записів в історії</string>
+    <string name="saved_success">Збережено в історію</string>
+    <string name="already_exists">Вже існує в історії</string>
+    <string name="confirm_clear_history_title">Очистити історію</string>
+    <string name="confirm_clear_history_message">Ви впевнені, що хочете очистити всю історію?</string>
+    <string name="confirm_clear_history_positive">Очистити</string>
+    <string name="confirm_clear_history_negative">Скасувати</string>
+</resources>

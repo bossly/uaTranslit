@@ -5,6 +5,15 @@
     <string name="input_latin">Latin</string>
     <string name="menu_copy">Скопіювати</string>
     <string name="menu_share">Поділитись</string>
-    <string name="clipboard_copied">Скопіювано в буфер обміну</string>
+    <string name="clipboard_copied">Скопівано в буфер обміну</string>
     <string name="shortcut_transliterate_long">Транслітерувати текст</string>
+    <string name="save_to_history">Save to history</string>
+    <string name="history_title">History</string>
+    <string name="no_history_found">No history found</string>
+    <string name="saved_success">Saved to history</string>
+    <string name="already_exists">Already exists in history</string>
+    <string name="confirm_clear_history_title">Clear History</string>
+    <string name="confirm_clear_history_message">Are you sure you want to clear all history?</string>
+    <string name="confirm_clear_history_positive">Clear</string>
+    <string name="confirm_clear_history_negative">Cancel</string>
 </resources>
