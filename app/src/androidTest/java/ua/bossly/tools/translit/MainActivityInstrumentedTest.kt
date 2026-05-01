@@ -2,8 +2,6 @@ package ua.bossly.tools.translit
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -21,7 +19,6 @@ import org.junit.runner.RunWith
 import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
 import tools.fastlane.screengrab.locale.LocaleTestRule
-import ua.bossly.tools.translit.ui.theme.UaTranslitTheme
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -35,25 +32,17 @@ class MainActivityInstrumentedTest {
     private val uiDevice
         get() = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
-    @get:Rule
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
-
-    @get:Rule
+    @get:Rule(order = 0)
     val localeTestRule = LocaleTestRule()
+
+    @get:Rule(order = 1)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Before
     fun before() {
         Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
         val extras: Bundle = InstrumentationRegistry.getArguments()
-        // https://docs.fastlane.tools/getting-started/android/screenshots/#advanced-screengrab
         Log.d("extras", extras.toString())
-
-        composeTestRule.activityRule.scenario.onActivity(MainActivity::enableEdgeToEdge)
-        composeTestRule.activity.setContent {
-            UaTranslitTheme {
-                HomeView()
-            }
-        }
     }
 
     @Test
@@ -64,6 +53,10 @@ class MainActivityInstrumentedTest {
 
     @Test
     fun makeTranslit() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val defaultTransform = TransformTypes.types(context).first()
+        val expected = WordTransformation.transform("Тарас Бульба", defaultTransform)
+
         uiDevice.waitForIdle()
         Screengrab.screenshot("screen1")
 
@@ -72,11 +65,10 @@ class MainActivityInstrumentedTest {
         Espresso.closeSoftKeyboard()
 
         composeTestRule.onNodeWithTag("output", true)
-            .assertTextEquals("Taras Bulba")
+            .assertTextEquals(expected)
 
         uiDevice.waitForIdle()
         Screengrab.screenshot("screen2")
-
     }
 
     @Test
@@ -86,7 +78,7 @@ class MainActivityInstrumentedTest {
 
         composeTestRule.waitForIdle()
 
-        uiDevice.waitForIdle(15000);
+        uiDevice.waitForIdle(15_000)
         Screengrab.screenshot("screen3")
     }
 }

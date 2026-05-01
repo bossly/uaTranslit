@@ -360,6 +360,7 @@ fun HomeContent(
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .testTag("input")
                         .onFocusChanged { focusState ->
                             if (!focusState.isFocused && inputText.isNotEmpty()) {
                                 onSaveToHistory(inputText, outputText, selectedItem)
@@ -377,7 +378,9 @@ fun HomeContent(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("output"),
                     value = outputText,
                     onValueChange = {
                     },
