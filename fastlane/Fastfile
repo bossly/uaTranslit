@@ -44,6 +44,12 @@ platform :android do
   lane :deploy do
     executeGradle("assembleRelease")
 
+    require "json"
+    metadata_path = File.expand_path("../app/build/outputs/apk/release/output-metadata.json", __dir__)
+    meta = JSON.parse(File.read(metadata_path))
+    el = meta["elements"][0]
+    UI.important("Publishing to Google Play: versionName=#{el["versionName"]} versionCode=#{el["versionCode"]}")
+
     upload_to_play_store(
         json_key_data: ENV["SUPPLY_JSON_KEY_DATA"]
     )
