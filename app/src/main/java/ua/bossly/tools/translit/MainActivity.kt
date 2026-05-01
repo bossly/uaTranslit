@@ -131,6 +131,9 @@ class MainActivity : ComponentActivity() {
         private const val TAG = "MainActivity"
         const val EXTRA_INITIAL_TEXT = "initial_text"
         const val EXTRA_FEATURE = "feature"
+
+        /** When true (e.g. instrumented UI tests), skip save-result Toasts for clean screenshots. */
+        const val EXTRA_SUPPRESS_SAVE_FEEDBACK = "suppress_save_feedback"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -163,7 +166,11 @@ class MainActivity : ComponentActivity() {
             UaTranslitTheme {
                 val context = LocalContext.current
                 LaunchedEffect(Unit) {
+                    val activity = context as ComponentActivity
                     viewModel.uiEvent.collect { event ->
+                        if (activity.intent.getBooleanExtra(EXTRA_SUPPRESS_SAVE_FEEDBACK, false)) {
+                            return@collect
+                        }
                         val message = when (event) {
                             is HomeViewModel.UiEvent.SaveSuccess -> context.getString(R.string.saved_success)
                             is HomeViewModel.UiEvent.AlreadyExists -> context.getString(R.string.already_exists)
@@ -305,14 +312,14 @@ fun HomeContent(
                         IconButton(onClick = { onShare(outputText) }) {
                             Icon(
                                 Icons.Default.Share,
-                                contentDescription = "Share",
+                                contentDescription = stringResource(R.string.menu_share),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                         IconButton(onClick = onNavigateToHistory) {
                             Icon(
                                 Icons.Default.History,
-                                contentDescription = "History",
+                                contentDescription = stringResource(R.string.cd_open_history),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
@@ -393,7 +400,10 @@ fun HomeContent(
                                 onSaveToHistory(inputText, outputText, selectedItem)
                             }
                         }) {
-                            Icon(Icons.Default.Star, contentDescription = "Save to history")
+                            Icon(
+                                Icons.Default.Star,
+                                contentDescription = stringResource(R.string.save_to_history)
+                            )
                         }
                     }
                 )
@@ -453,7 +463,7 @@ fun HistoryContent(
                     IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.cd_navigate_up),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -462,7 +472,7 @@ fun HistoryContent(
                     IconButton(onClick = { onClearHistory() }) {
                         Icon(
                             Icons.Default.CleaningServices,
-                            contentDescription = "Clear all",
+                            contentDescription = stringResource(R.string.cd_clear_history_all),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -475,7 +485,8 @@ fun HistoryContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(24.dp),
+                    .padding(24.dp)
+                    .testTag("history_empty"),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = stringResource(R.string.no_history_found))
@@ -484,7 +495,8 @@ fun HistoryContent(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .testTag("history_list"),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
@@ -532,7 +544,7 @@ fun HistoryContent(
                                 ) {
                                     Icon(
                                         Icons.Default.ContentCopy,
-                                        contentDescription = "Copy",
+                                        contentDescription = stringResource(R.string.menu_copy),
                                         modifier = Modifier.size(18.dp),
                                         tint = MaterialTheme.colorScheme.onSurface
                                     )
@@ -548,7 +560,7 @@ fun HistoryContent(
                                 ) {
                                     Icon(
                                         Icons.Default.Edit,
-                                        contentDescription = "Re-run",
+                                        contentDescription = stringResource(R.string.cd_history_rerun),
                                         modifier = Modifier.size(18.dp),
                                         tint = MaterialTheme.colorScheme.onSurface
                                     )
@@ -559,7 +571,7 @@ fun HistoryContent(
                                 ) {
                                     Icon(
                                         Icons.Default.Delete,
-                                        contentDescription = "Delete",
+                                        contentDescription = stringResource(R.string.cd_history_delete),
                                         modifier = Modifier.size(18.dp),
                                         tint = MaterialTheme.colorScheme.onSurface
                                     )
@@ -582,6 +594,7 @@ private fun share(text: String, context: Context) {
     startActivity(context, shareIntent, null)
 }
 
+@Preview(showBackground = true, locale = "en")
 @Preview(showBackground = true, locale = "uk")
 @Composable
 fun PreviewHomeView() {
@@ -599,6 +612,7 @@ fun PreviewHomeView() {
     }
 }
 
+@Preview(showBackground = true, locale = "en")
 @Preview(showBackground = true, locale = "uk")
 @Composable
 fun PreviewHistoryView() {

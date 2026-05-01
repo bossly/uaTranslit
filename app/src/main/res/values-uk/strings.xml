@@ -16,4 +16,9 @@
     <string name="confirm_clear_history_message">Ви впевнені, що хочете очистити всю історію?</string>
     <string name="confirm_clear_history_positive">Очистити</string>
     <string name="confirm_clear_history_negative">Скасувати</string>
+    <string name="cd_open_history">Відкрити історію</string>
+    <string name="cd_navigate_up">Назад</string>
+    <string name="cd_clear_history_all">Очистити всю історію</string>
+    <string name="cd_history_rerun">Редагувати знову</string>
+    <string name="cd_history_delete">Видалити</string>
 </resources>
