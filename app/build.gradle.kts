@@ -4,6 +4,14 @@ plugins {
     alias(libs.plugins.com.google.devtools.ksp)
 }
 
+val appVersionCode = System.getenv("APP_VERSION_CODE")?.toIntOrNull()
+    ?: (project.findProperty("appVersionCode") as String?)?.toIntOrNull()
+    ?: error("Set appVersionCode in gradle.properties or APP_VERSION_CODE env")
+
+val appVersionName = System.getenv("APP_VERSION_NAME")?.takeIf { it.isNotBlank() }
+    ?: (project.findProperty("appVersionName") as String?)?.takeIf { !it.isNullOrBlank() }
+    ?: error("Set appVersionName in gradle.properties or APP_VERSION_NAME env")
+
 android {
     namespace = "ua.bossly.tools.translit"
     compileSdk = 35
@@ -12,8 +20,8 @@ android {
         applicationId = "ua.bossly.tools.translit"
         minSdk = 31
         targetSdk = 35
-        versionCode = 39
-        versionName = "1.6.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
