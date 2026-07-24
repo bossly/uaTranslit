@@ -37,7 +37,7 @@ jobs:
           APP_SIGN_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           APP_SIGN_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           APP_VERSION_NAME: ${{ github.ref_name }}
-          APP_VERSION_CODE: ${{ github.run_id }}
+          APP_VERSION_CODE: ${{ github.run_number }}
           SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         with:
           lane: deploy

@@ -14,12 +14,12 @@ val appVersionName = System.getenv("APP_VERSION_NAME")?.takeIf { it.isNotBlank()
 
 android {
     namespace = "ua.bossly.tools.translit"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "ua.bossly.tools.translit"
         minSdk = 31
-        targetSdk = 35
+        targetSdk = 36
         versionCode = appVersionCode
         versionName = appVersionName
 
