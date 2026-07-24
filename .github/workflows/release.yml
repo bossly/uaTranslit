@@ -14,6 +14,16 @@ on:
         description: 'Version code (optional)'
         required: false
         type: string
+      channel:
+        description: 'Release channel'
+        required: false
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - beta
+          - alpha
+          - internal
 
 jobs:
   build:
@@ -48,6 +58,7 @@ jobs:
           APP_SIGN_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           APP_VERSION_NAME: ${{ inputs.version || github.ref_name }}
           APP_VERSION_CODE: ${{ inputs.number || github.run_number }}
+          SUPPLY_TRACK: ${{ (inputs.channel == 'public' && 'production') || inputs.channel || 'production' }}
           SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         with:
           lane: deploy

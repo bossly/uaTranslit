@@ -48,10 +48,13 @@ platform :android do
     metadata_path = File.expand_path("../app/build/outputs/apk/release/output-metadata.json", __dir__)
     meta = JSON.parse(File.read(metadata_path))
     el = meta["elements"][0]
-    UI.important("Publishing to Google Play: versionName=#{el["versionName"]} versionCode=#{el["versionCode"]}")
+    track = ENV["SUPPLY_TRACK"]
+    track = "production" if track.nil? || track.empty?
+    UI.important("Publishing to Google Play track '#{track}': versionName=#{el["versionName"]} versionCode=#{el["versionCode"]}")
 
     upload_to_play_store(
-        json_key_data: ENV["SUPPLY_JSON_KEY_DATA"]
+        json_key_data: ENV["SUPPLY_JSON_KEY_DATA"],
+        track: track
     )
   end
 
