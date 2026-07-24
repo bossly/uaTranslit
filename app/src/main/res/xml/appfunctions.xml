@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appfunctions xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Gemini / Android AppFunctions capabilities declaration -->
+    <appfunction
+        android:name="ua.bossly.tools.translit.appfunctions.transliterateText"
+        android:description="@string/app_name"
+        android:enabled="true">
+        <parameter
+            name="text"
+            required="true" />
+        <parameter
+            name="systemId"
+            required="false" />
+    </appfunction>
+
+    <appfunction
+        android:name="ua.bossly.tools.translit.appfunctions.transliterate"
+        android:description="@string/app_name"
+        android:enabled="true">
+        <parameter
+            name="text"
+            required="true" />
+    </appfunction>
+
+    <appfunction
+        android:name="ua.bossly.tools.translit.appfunctions.getSupportedSystems"
+        android:description="@string/app_name"
+        android:enabled="true" />
+
+    <appfunction
+        android:name="ua.bossly.tools.translit.appfunctions.getHistory"
+        android:description="@string/app_name"
+        android:enabled="true">
+        <parameter
+            name="limit"
+            required="false" />
+    </appfunction>
+</appfunctions>

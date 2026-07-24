@@ -1,0 +1,3 @@
+feat: App Actions migration to Gemini AppFunctions & agent building blocks
+feat: Headless background transliteration for AI assistants
+chore: Updated version to 1.7.2

@@ -42,11 +42,16 @@
             </intent-filter>
         </activity>
         
-        <!-- App Actions metadata -->
+        <!-- App Actions metadata (legacy Assistant) -->
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/actions" />
             
+        <!-- AppFunctions metadata for Gemini AI Assistant ecosystem -->
+        <meta-data
+            android:name="com.google.android.appfunctions"
+            android:resource="@xml/appfunctions" />
+
         <!-- App shortcuts for Assistant discovery -->
         <meta-data
             android:name="android.app.shortcuts"
