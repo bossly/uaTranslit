@@ -1,8 +1,11 @@
+@file:Suppress("unused")
+
 package ua.bossly.tools.translit.appfunctions
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import ua.bossly.tools.translit.MainActivity
@@ -112,7 +115,7 @@ object TranslitAppFunctions {
             "uatranslit://open?feature=${systemId ?: "transliterate"}"
         }
 
-        return Intent(Intent.ACTION_VIEW, Uri.parse(uriString)).apply {
+        return Intent(Intent.ACTION_VIEW, uriString.toUri()).apply {
             setClass(context, MainActivity::class.java)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }

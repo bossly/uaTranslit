@@ -81,7 +81,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import ua.bossly.tools.translit.data.AppDatabase
@@ -129,8 +128,6 @@ fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
 class MainActivity : ComponentActivity() {
     companion object {
         private const val TAG = "MainActivity"
-        const val EXTRA_INITIAL_TEXT = "initial_text"
-        const val EXTRA_FEATURE = "feature"
 
         /** When true (e.g. instrumented UI tests), skip save-result Toasts for clean screenshots. */
         const val EXTRA_SUPPRESS_SAVE_FEEDBACK = "suppress_save_feedback"
@@ -144,20 +141,18 @@ class MainActivity : ComponentActivity() {
         val database = AppDatabase.getDatabase(applicationContext)
         val repository = TransliterationRepository(database.transliterationDao())
 
-        // ViewModel Factory
-        class HomeViewModelFactory(private val repository: TransliterationRepository) :
-            ViewModelProvider.Factory {
-            @Suppress("UNCHECKCT_CAST")
+        // ViewModel factory
+        class HomeViewModelFactory : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
             override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+                if (modelClass.isAssignableFrom(HomeViewModel::class.java))
                     return HomeViewModel(repository) as T
-                }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }
         }
 
         val viewModel: HomeViewModel =
-            ViewModelProvider(this, HomeViewModelFactory(repository))[HomeViewModel::class.java]
+            ViewModelProvider(this, HomeViewModelFactory())[HomeViewModel::class.java]
 
         // Handle App Actions and deep links
         val initialData = handleIntent(intent)
@@ -165,6 +160,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             UaTranslitTheme {
                 val context = LocalContext.current
+                val appContext = context.applicationContext
                 LaunchedEffect(Unit) {
                     val activity = context as ComponentActivity
                     viewModel.uiEvent.collect { event ->
@@ -172,10 +168,10 @@ class MainActivity : ComponentActivity() {
                             return@collect
                         }
                         val message = when (event) {
-                            is HomeViewModel.UiEvent.SaveSuccess -> context.getString(R.string.saved_success)
-                            is HomeViewModel.UiEvent.AlreadyExists -> context.getString(R.string.already_exists)
+                            is HomeViewModel.UiEvent.SaveSuccess -> appContext.getString(R.string.saved_success)
+                            is HomeViewModel.UiEvent.AlreadyExists -> appContext.getString(R.string.already_exists)
                         }
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
                     }
                 }
                 var currentScreen by remember { mutableStateOf("home") }
@@ -202,14 +198,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent?.let {
-            setIntent(it)
-            // Handle new intent data if needed
-            val intentData = handleIntent(it)
-            Log.d(TAG, "New intent received with text: ${intentData.first}, feature: ${intentData.second}")
-        }
+        setIntent(intent)
+        // Handle new intent data if needed
+        val intentData = handleIntent(intent)
+        Log.d(
+            TAG,
+            "New intent received with text: ${intentData.first}, feature: ${intentData.second}"
+        )
     }
 
     private fun handleIntent(intent: Intent): Pair<String, String> {
@@ -358,6 +355,7 @@ fun HomeContent(
                         types.forEach { item ->
                             DropdownMenuItem(text = { Text(text = item.name) }, onClick = {
                                 selectedItem = item
+                                outputText = WordTransformation.transform(inputText, item)
                                 expanded = false
                             })
                         }
@@ -591,7 +589,7 @@ private fun share(text: String, context: Context) {
         type = "text/plain"
     }
     val shareIntent = Intent.createChooser(sendIntent, null)
-    startActivity(context, shareIntent, null)
+    context.startActivity(shareIntent)
 }
 
 @Preview(showBackground = true, locale = "en")
