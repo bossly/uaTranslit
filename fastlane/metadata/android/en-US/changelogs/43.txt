@@ -1,0 +1,3 @@
+- Material Design 3 UI update with dark mode and accessibility improvements
+- Added ISO 9:1995 transliteration standard support
+- Improved history navigation and transliteration standard selection
