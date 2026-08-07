@@ -16,7 +16,7 @@ __Хочете допомогти? [Задонатити](https://send.monobank.
      alt="Get it on Google Play"
      height="80">](https://play.google.com/store/apps/details?id=ua.bossly.tools.translit)
 
-| ![Primary screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen1.png) | ![Secondary screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen2.png) | ![Third screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen3.png) |
+| ![Primary screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen2.png) | ![Secondary screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen3.png) | ![Third screen](fastlane/metadata/android/en-US/images/phoneScreenshots/screen4.png) |
 |----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
 
 ## Словники
