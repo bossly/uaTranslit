@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build and running Unit Tests
+    name: build
     runs-on: ubuntu-latest
 
     timeout-minutes: 30
