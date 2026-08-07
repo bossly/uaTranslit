@@ -135,14 +135,17 @@ object TranslitAppFunctions {
         outputText: String,
         transformType: TransformType
     ) {
+        val trimmedInput = inputText.trim()
+        val trimmedOutput = outputText.trim()
+        if (trimmedInput.isEmpty()) return
         val database = AppDatabase.getDatabase(context.applicationContext)
         val repository = TransliterationRepository(database.transliterationDao())
         runBlocking {
-            if (!repository.exists(inputText, outputText)) {
+            if (!repository.exists(trimmedInput, trimmedOutput)) {
                 repository.insert(
                     TransliterationHistory(
-                        inputText = inputText,
-                        outputText = outputText,
+                        inputText = trimmedInput,
+                        outputText = trimmedOutput,
                         transformType = transformType.name
                     )
                 )

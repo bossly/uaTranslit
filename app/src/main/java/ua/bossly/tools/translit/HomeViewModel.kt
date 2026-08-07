@@ -38,12 +38,15 @@ class HomeViewModel(private val repository: TransliterationRepository) : ViewMod
     }
 
     fun saveToHistory(inputText: String, outputText: String, transformType: TransformType) {
+        val trimmedInput = inputText.trim()
+        val trimmedOutput = outputText.trim()
+        if (trimmedInput.isEmpty()) return
         viewModelScope.launch {
-            if (!repository.exists(inputText, outputText)) {
+            if (!repository.exists(trimmedInput, trimmedOutput)) {
                 repository.insert(
                     TransliterationHistory(
-                        inputText = inputText,
-                        outputText = outputText,
+                        inputText = trimmedInput,
+                        outputText = trimmedOutput,
                         transformType = transformType.name
                     )
                 )
