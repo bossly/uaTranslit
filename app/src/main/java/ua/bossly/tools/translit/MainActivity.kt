@@ -17,9 +17,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.ReportDrawnWhen
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -147,29 +151,30 @@ class MainActivity : ComponentActivity() {
         const val EXTRA_SUPPRESS_SAVE_FEEDBACK = "suppress_save_feedback"
     }
 
+    private val database by lazy { AppDatabase.getDatabase(applicationContext) }
+    private val repository by lazy { TransliterationRepository(database.transliterationDao()) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Initialize Database and Repository
-        val database = AppDatabase.getDatabase(applicationContext)
-        val repository = TransliterationRepository(database.transliterationDao())
-
-        // ViewModel factory
-        class HomeViewModelFactory : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(HomeViewModel::class.java))
-                    return HomeViewModel(repository) as T
-                throw IllegalArgumentException("Unknown ViewModel class")
+        val viewModel: HomeViewModel by viewModels {
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                    if (modelClass.isAssignableFrom(HomeViewModel::class.java))
+                        return HomeViewModel(repository) as T
+                    throw IllegalArgumentException("Unknown ViewModel class")
+                }
             }
         }
 
-        val viewModel: HomeViewModel =
-            ViewModelProvider(this, HomeViewModelFactory())[HomeViewModel::class.java]
-
         // Handle App Actions and deep links
         val initialData = handleIntent(intent)
+
+        // Immediately trigger background CSV rule pre-warming in parallel with Compose setContent initialization
+        viewModel.loadTypesAsync(applicationContext, initialData.second)
 
         setContent {
             UaTranslitTheme {
@@ -286,17 +291,35 @@ fun HomeView(
     onTypeChange: (TransformType) -> Unit = {}
 ) {
     val context = LocalContext.current
-    val types = remember(context) { viewModel.types(context).toList() }
+    LaunchedEffect(context, initialTypeName) {
+        viewModel.loadTypesAsync(context, initialTypeName)
+    }
+    LaunchedEffect(initialText) {
+        if (initialText.isNotEmpty()) {
+            viewModel.updateInput(initialText)
+        }
+    }
+    val types by viewModel.typesState.collectAsState()
+    val outputText by viewModel.outputText.collectAsState()
+
+    ReportDrawnWhen { types.isNotEmpty() }
     HomeContent(
         types = types,
         initialText = initialText,
         initialTypeName = initialTypeName,
         initialFeature = initialFeature,
+        outputText = outputText,
         onNavigateToHistory = onNavigateToHistory,
         onSaveToHistory = { input, output, type -> viewModel.saveToHistory(input, output, type) },
         onShare = { text -> share(text, context) },
-        onTextChange = onTextChange,
-        onTypeChange = onTypeChange
+        onTextChange = { text ->
+            viewModel.updateInput(text)
+            onTextChange(text)
+        },
+        onTypeChange = { type ->
+            viewModel.updateSelectedType(type)
+            onTypeChange(type)
+        }
     )
 }
 
@@ -307,6 +330,7 @@ fun HomeContent(
     initialText: String,
     initialTypeName: String = "",
     initialFeature: String,
+    outputText: String,
     onNavigateToHistory: () -> Unit,
     onSaveToHistory: (String, String, TransformType) -> Unit,
     onShare: (String) -> Unit,
@@ -318,21 +342,30 @@ fun HomeContent(
     var inputText by rememberSaveable { mutableStateOf(initialText) }
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember(types, initialTypeName) {
-        mutableStateOf(types.find { it.name == initialTypeName } ?: types.first())
+        mutableStateOf(
+            if (types.isNotEmpty()) {
+                types.find { it.name == initialTypeName } ?: types.first()
+            } else null
+        )
     }
-    var outputText by remember { mutableStateOf(WordTransformation.transform(inputText, selectedItem)) }
 
-
-    LaunchedEffect(initialText, initialTypeName) {
-        if (initialTypeName.isNotEmpty()) {
-            types.find { it.name == initialTypeName }?.let {
-                selectedItem = it
+    LaunchedEffect(types, initialTypeName) {
+        if (types.isNotEmpty()) {
+            val item = if (initialTypeName.isNotEmpty()) {
+                types.find { it.name == initialTypeName } ?: types.first()
+            } else {
+                selectedItem ?: types.first()
             }
+            selectedItem = item
+            onTypeChange(item)
         }
+    }
+
+    LaunchedEffect(initialText) {
         if (inputText != initialText) {
             inputText = initialText
+            onTextChange(initialText)
         }
-        outputText = WordTransformation.transform(inputText, selectedItem)
     }
 
     // Log initial feature for debugging App Actions
@@ -395,7 +428,7 @@ fun HomeContent(
                                 role = Role.DropdownList
                             },
                         readOnly = true,
-                        value = selectedItem.name,
+                        value = selectedItem?.name ?: stringResource(id = R.string.type_select),
                         onValueChange = {},
                         label = { Text(text = stringResource(id = R.string.type_select)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -406,20 +439,21 @@ fun HomeContent(
                             disabledIndicatorColor = Color.Transparent
                         )
                     )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        types.forEach { item ->
-                            DropdownMenuItem(
-                                text = { Text(text = item.name) },
-                                onClick = {
-                                    selectedItem = item
-                                    onTypeChange(item)
-                                    outputText = WordTransformation.transform(inputText, item)
-                                    expanded = false
-                                }
-                            )
+                    if (expanded) {
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            types.forEach { item ->
+                                DropdownMenuItem(
+                                    text = { Text(text = item.name) },
+                                    onClick = {
+                                        selectedItem = item
+                                        onTypeChange(item)
+                                        expanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -432,7 +466,6 @@ fun HomeContent(
                     onValueChange = {
                         inputText = it
                         onTextChange(it)
-                        outputText = WordTransformation.transform(it, selectedItem)
                     },
                     label = stringResource(id = R.string.input_cyrillic),
                     trailingIcon = {
@@ -440,7 +473,6 @@ fun HomeContent(
                             IconButton(onClick = {
                                 inputText = ""
                                 onTextChange("")
-                                outputText = ""
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
@@ -481,8 +513,8 @@ fun HomeContent(
                                 }
                             }
                             IconButton(onClick = {
-                                if (inputText.isNotEmpty()) {
-                                    onSaveToHistory(inputText, outputText, selectedItem)
+                                if (inputText.isNotEmpty() && selectedItem != null) {
+                                    onSaveToHistory(inputText, outputText, selectedItem!!)
                                 }
                             }) {
                                 Icon(
@@ -494,7 +526,15 @@ fun HomeContent(
                     }
                 )
 
-                if (selectedItem.tip.isNotEmpty()) {
+                if (!selectedItem?.tip.isNullOrEmpty()) {
+                    val primaryColor = MaterialTheme.colorScheme.primary
+                    val annotatedTip = remember(selectedItem?.tip, primaryColor) {
+                        HtmlCompat.fromHtml(
+                            selectedItem!!.tip,
+                            HtmlCompat.FROM_HTML_MODE_COMPACT
+                        ).toAnnotatedString(linkColor = primaryColor)
+                    }
+
                     OutlinedCard(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.outlinedCardColors(
@@ -509,14 +549,11 @@ fun HomeContent(
                             Icon(
                                 imageVector = Icons.Default.Info,
                                 contentDescription = stringResource(R.string.cd_info_tip),
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = primaryColor,
                                 modifier = Modifier.padding(end = 12.dp)
                             )
                             Text(
-                                text = HtmlCompat.fromHtml(
-                                    SpannableStringBuilder(selectedItem.tip).toString(),
-                                    HtmlCompat.FROM_HTML_MODE_COMPACT
-                                ).toAnnotatedString(linkColor = MaterialTheme.colorScheme.primary),
+                                text = annotatedTip,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -535,7 +572,7 @@ fun HistoryView(
     onBack: () -> Unit,
     onReRun: (String, String) -> Unit
 ) {
-    val history by viewModel.history.collectAsState(initial = emptyList())
+    val history by viewModel.history.collectAsState()
 
     HistoryContent(
         history = history,
@@ -549,7 +586,7 @@ fun HistoryView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryContent(
-    history: List<TransliterationHistory>,
+    history: List<TransliterationHistory>?,
     onBack: () -> Unit,
     onReRun: (String, String) -> Unit,
     onClearHistory: () -> Unit,
@@ -605,7 +642,7 @@ fun HistoryContent(
                     }
                 },
                 actions = {
-                    if (history.isNotEmpty()) {
+                    if (!history.isNullOrEmpty()) {
                         IconButton(onClick = { showClearDialog = true }) {
                             Icon(
                                 Icons.Default.CleaningServices,
@@ -617,7 +654,13 @@ fun HistoryContent(
             )
         }
     ) { innerPadding ->
-        if (history.isEmpty()) {
+        if (history == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            )
+        } else if (history.isEmpty()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -762,6 +805,7 @@ fun PreviewHomeView() {
             types = types,
             initialText = "Привіт",
             initialFeature = "",
+            outputText = if (types.isNotEmpty()) WordTransformation.transform("Привіт", types.first()) else "",
             onNavigateToHistory = {},
             onSaveToHistory = { _, _, _ -> },
             onShare = {}

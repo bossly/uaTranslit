@@ -11,55 +11,88 @@ import java.util.Locale
 open class FileTransliteration(stream: InputStream) : WordTransform {
     val rows: List<List<String>> = csvReader().readAll(stream)
 
-    override fun snapSeparator(): String = rows[0][3]
+    private val cachedSeparator: String = rows.getOrNull(0)?.getOrNull(3) ?: ""
+    override fun snapSeparator(): String = cachedSeparator
+
+    private val singleCharDefault = HashMap<Char, String>()
+    private val singleCharStart = HashMap<Char, String>()
+    private val twoCharDefault = HashMap<String, String>()
+    private val twoCharStart = HashMap<String, String>()
+    private val originChars = HashSet<Char>()
+
+    init {
+        val originRow = rows.getOrNull(1)
+        val defaultRow = rows.getOrNull(2)
+        val startRowIndex = rows.indexOfFirst { it.isNotEmpty() && it[0] == "start" }
+        val startRow = if (startRowIndex > 0) rows[startRowIndex] else null
+
+        if (originRow != null && defaultRow != null) {
+            val maxCol = minOf(originRow.size, defaultRow.size)
+            for (i in 1 until maxCol) {
+                val orig = originRow[i]
+                if (orig.isEmpty()) continue
+
+                val defVal = defaultRow.getOrNull(i) ?: ""
+                val startVal = startRow?.getOrNull(i) ?: ""
+
+                if (orig.length == 1) {
+                    val keyChar = orig[0].lowercaseChar()
+                    originChars.add(keyChar)
+                    singleCharDefault[keyChar] = defVal
+                    if (startVal.isNotEmpty()) {
+                        singleCharStart[keyChar] = startVal
+                    }
+                } else if (orig.length == 2) {
+                    val keyStr = orig.lowercase(Locale.getDefault())
+                    twoCharDefault[keyStr] = defVal
+                    if (startVal.isNotEmpty()) {
+                        twoCharStart[keyStr] = startVal
+                    }
+                }
+            }
+        }
+    }
 
     override fun convert(char: Char, next: Char?, position: WordPosition): WordSnap {
         val lowercase = char.isLowerCase()
-        val charLowercase = char.toString().lowercase(Locale.getDefault())
-        // rows index, where header = 0
-        val origin = 1
-        val transliterated = 2
-        val start = rows.indexOfFirst {
-            it[0] == "start"
+        val charLower = char.lowercaseChar()
+
+        if (next != null) {
+            val combine = "$charLower${next.lowercaseChar()}".trim()
+            if (combine.length == 2) {
+                val startRes = twoCharStart[combine]
+                if (startRes != null && startRes.isNotEmpty()) {
+                    val res = if (lowercase) startRes else startRes.caps()
+                    return WordSnap(res, true)
+                }
+                val defRes = twoCharDefault[combine]
+                if (defRes != null && defRes.isNotEmpty()) {
+                    val res = if (lowercase) defRes else defRes.caps()
+                    return WordSnap(res, true)
+                }
+            }
         }
 
-        val column = rows[origin].indexOf(charLowercase)
-
-        if (column < 0) {
+        if (!originChars.contains(charLower)) {
             return WordSnap(char.toString())
         }
 
-        val combine = (charLowercase + next.toString().lowercase(Locale.getDefault())).trim()
-        var result: String
-
-        if (combine.length == 2) {
-            val combIndex = rows[origin].indexOf(combine)
-
-            if (start > 0 && combIndex >= 0 && rows[start][combIndex].isNotEmpty()) {
-                result =
-                    if (lowercase) rows[start][combIndex] else rows[start][combIndex].caps()
-                return WordSnap(result, true)
-            } else if (combIndex >= 0 && rows[transliterated][combIndex].isNotEmpty()) {
-                result =
-                    if (lowercase) rows[transliterated][combIndex] else rows[transliterated][combIndex].caps()
-                return WordSnap(result, true)
-            }
-        }
-
-        result = when (position) {
+        val resultStr = when (position) {
             WordPosition.BEGIN -> {
-                if (start > 0 && rows[start][column].isNotEmpty()) {
-                    if (lowercase) rows[start][column] else rows[start][column].caps()
+                val startRes = singleCharStart[charLower]
+                if (startRes != null && startRes.isNotEmpty()) {
+                    startRes
                 } else {
-                    if (lowercase) rows[transliterated][column] else rows[transliterated][column].caps()
+                    singleCharDefault[charLower] ?: ""
                 }
             }
             else -> {
-                if (lowercase) rows[transliterated][column] else rows[transliterated][column].caps()
+                singleCharDefault[charLower] ?: ""
             }
         }
 
-        return WordSnap(result)
+        val finalResult = if (lowercase) resultStr else resultStr.caps()
+        return WordSnap(finalResult)
     }
 }
 

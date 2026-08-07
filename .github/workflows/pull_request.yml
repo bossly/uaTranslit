@@ -4,6 +4,11 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 jobs:
   build:
     name: Build and running Unit Tests
@@ -33,8 +38,17 @@ jobs:
           APP_VERSION_CODE: ${{ github.run_number }}
         run: bundle exec fastlane unit_test
 
+      - name: Publish Android Test Report Preview
+        uses: mikepenz/action-junit-report@v5
+        if: always()
+        with:
+          report_paths: '**/build/test-results/**/*.xml'
+          annotate_only: false
+          detailed_summary: true
+          check_name: 'Android Test Results'
+
       - name: Upload unit test results
-        if: success() || failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-results-${{ github.run_number }}
