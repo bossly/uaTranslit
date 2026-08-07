@@ -4,12 +4,14 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  CACHE_BUNDLER: ~/.bundler
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
 
 jobs:
   build:
-    name: Build and running Unit Tests
+    name: build
     runs-on: ubuntu-latest
 
     timeout-minutes: 30
@@ -18,32 +20,35 @@ jobs:
         uses: actions/checkout@v4
 
       - name: set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
+          cache: gradle
 
-      - name: Cache gradle
-        uses: actions/cache@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          ruby-version: '3.2'
+          bundler-cache: true
 
       - name: Run Unit Tests
-        uses: maierj/fastlane-action@v1.4.0
         env:
           APP_BUILD_NUMBER: ${{ env.GITHUB_RUN_ID }}
           APP_VERSION_CODE: ${{ github.run_number }}
+        run: bundle exec fastlane unit_test
+
+      - name: Publish Android Test Report Preview
+        uses: mikepenz/action-junit-report@v5
+        if: always()
         with:
-          lane: unit_test
-          skip-tracking: false
-          subdirectory: fastlane
-          bundle-install-path: CACHE_BUNDLER
+          report_paths: '**/build/test-results/**/*.xml'
+          annotate_only: false
+          detailed_summary: true
+          check_name: 'Android Test Results'
 
       - name: Upload unit test results
-        if: success() || failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-results-${{ github.run_number }}

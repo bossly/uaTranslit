@@ -21,4 +21,9 @@
     <string name="cd_clear_history_all">Очистити всю історію</string>
     <string name="cd_history_rerun">Редагувати знову</string>
     <string name="cd_history_delete">Видалити</string>
+    <string name="cd_clear_input">Очистити текст</string>
+    <string name="cd_copy_output">Скопіювати транслітерацію</string>
+    <string name="cd_select_type">Стандарт транслітерації</string>
+    <string name="cd_info_tip">Опис стандарту</string>
 </resources>
+

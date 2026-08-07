@@ -1,0 +1,17 @@
+#
+# Startup Profile for uaTranslit Application
+# Optimizes DEX layout ordering for cold launch execution paths (Android 7.0+ / Nougat JIT + AOT)
+#
+
+HSPLua/bossly/tools/translit/MainActivity;->onCreate(Landroid/os/Bundle;)V
+HSPLua/bossly/tools/translit/MainActivity;->handleIntent(Landroid/content/Intent;)Lkotlin/Pair;
+HSPLua/bossly/tools/translit/MainActivityKt;->HomeView(Lua/bossly/tools/translit/HomeViewModel;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+HSPLua/bossly/tools/translit/MainActivityKt;->HomeContent(Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+HSPLua/bossly/tools/translit/HomeViewModel;-><init>(Lua/bossly/tools/translit/data/TransliterationRepository;)V
+HSPLua/bossly/tools/translit/HomeViewModel;->loadTypesAsync(Landroid/content/Context;Ljava/lang/String;)V
+HSPLua/bossly/tools/translit/TransformTypes;->types(Landroid/content/Context;)[Lua/bossly/tools/translit/TransformType;
+HSPLua/bossly/tools/translit/FileTransliteration;-><init>(Ljava/io/InputStream;)V
+HSPLua/bossly/tools/translit/ui/theme/ThemeKt;->UaTranslitTheme(ZZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+HSPLua/bossly/tools/translit/ui/components/TranslitTextFieldKt;->TranslitTextField(Ljava/lang/String;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Landroidx/compose/ui/Modifier;ZIILkotlin/jvm/functions/Function2;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/runtime/Composer;II)V
+Lua/bossly/tools/translit/MainActivity;
+Lua/bossly/tools/translit/HomeViewModel;

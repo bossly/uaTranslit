@@ -1,0 +1,62 @@
+#
+# Baseline Profile for uaTranslit Application
+# 
+# Instructs Android Runtime (ART) to Ahead-Of-Time (AOT) compile critical startup paths,
+# Compose rendering layouts, and transliteration engine lookups upon app installation.
+#
+
+# MainActivity & Navigation
+HSPLua/bossly/tools/translit/MainActivity;->onCreate(Landroid/os/Bundle;)V
+HSPLua/bossly/tools/translit/MainActivity;->handleIntent(Landroid/content/Intent;)Lkotlin/Pair;
+HSPLua/bossly/tools/translit/MainActivityKt;->HomeView(Lua/bossly/tools/translit/HomeViewModel;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+HSPLua/bossly/tools/translit/MainActivityKt;->HomeContent(Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+HSPLua/bossly/tools/translit/MainActivityKt;->HistoryView(Lua/bossly/tools/translit/HomeViewModel;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+HSPLua/bossly/tools/translit/MainActivityKt;->HistoryContent(Ljava/util/List;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)V
+Lua/bossly/tools/translit/MainActivity;
+Lua/bossly/tools/translit/MainActivityKt;
+
+# ViewModel & Application Logic
+HSPLua/bossly/tools/translit/HomeViewModel;-><init>(Lua/bossly/tools/translit/data/TransliterationRepository;)V
+HSPLua/bossly/tools/translit/HomeViewModel;->loadTypesAsync(Landroid/content/Context;Ljava/lang/String;)V
+HSPLua/bossly/tools/translit/HomeViewModel;->updateInput(Ljava/lang/String;)V
+HSPLua/bossly/tools/translit/HomeViewModel;->updateSelectedType(Lua/bossly/tools/translit/TransformType;)V
+HSPLua/bossly/tools/translit/HomeViewModel;->saveToHistory(Ljava/lang/String;Ljava/lang/String;Lua/bossly/tools/translit/TransformType;)V
+Lua/bossly/tools/translit/HomeViewModel;
+
+# Transliteration Core Engine
+HSPLua/bossly/tools/translit/WordTransformation;->transform(Ljava/lang/String;Lua/bossly/tools/translit/WordTransform;)Ljava/lang/String;
+HSPLua/bossly/tools/translit/FileTransliteration;-><init>(Ljava/io/InputStream;)V
+HSPLua/bossly/tools/translit/FileTransliteration;->convert(CLjava/lang/Character;Lua/bossly/tools/translit/WordPosition;)Lua/bossly/tools/translit/WordSnap;
+HSPLua/bossly/tools/translit/FileTransliteration;->snapSeparator()Ljava/lang/String;
+HSPLua/bossly/tools/translit/TransformTypes;->types(Landroid/content/Context;)[Lua/bossly/tools/translit/TransformType;
+Lua/bossly/tools/translit/WordTransformation;
+Lua/bossly/tools/translit/FileTransliteration;
+Lua/bossly/tools/translit/TransformType;
+Lua/bossly/tools/translit/TransformTypes;
+Lua/bossly/tools/translit/WordSnap;
+Lua/bossly/tools/translit/WordPosition;
+
+# Data Layer & Database
+HSPLua/bossly/tools/translit/data/AppDatabase$Companion;->getDatabase(Landroid/content/Context;)Lua/bossly/tools/translit/data/AppDatabase;
+HSPLua/bossly/tools/translit/data/TransliterationRepository;-><init>(Lua/bossly/tools/translit/data/TransliterationDao;)V
+Lua/bossly/tools/translit/data/AppDatabase;
+Lua/bossly/tools/translit/data/TransliterationRepository;
+Lua/bossly/tools/translit/data/TransliterationHistory;
+
+# UI Components & Theme Design System
+HSPLua/bossly/tools/translit/ui/components/TranslitTextFieldKt;->TranslitTextField(Ljava/lang/String;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Landroidx/compose/ui/Modifier;ZIILkotlin/jvm/functions/Function2;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/runtime/Composer;II)V
+HSPLua/bossly/tools/translit/ui/theme/ThemeKt;->UaTranslitTheme(ZZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+Lua/bossly/tools/translit/ui/components/TranslitTextFieldKt;
+
+# AppFunctions & Ecosystem
+HSPLua/bossly/tools/translit/appfunctions/TranslitAppFunctions;->transliterateText(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Z)Lua/bossly/tools/translit/appfunctions/TranslitResultResponse;
+Lua/bossly/tools/translit/appfunctions/TranslitAppFunctions;
+
+# Jetpack Compose Runtime Hot Paths
+HSPLandroidx/compose/runtime/ComposerImpl;->startRestartGroup(I)Landroidx/compose/runtime/Composer;
+HSPLandroidx/compose/runtime/ComposerImpl;->endRestartGroup()Landroidx/compose/runtime/ScopeUpdateScope;
+HSPLandroidx/compose/ui/node/LayoutNode;->measure(Landroidx/compose/ui/unit/Constraints;)Z
+HSPLandroidx/compose/material3/TextFieldKt;->TextField(Ljava/lang/String;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZZLandroidx/compose/ui/text/TextStyle;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Z)V
+Landroidx/compose/runtime/Composer;
+Landroidx/compose/ui/Modifier;
+Landroidx/compose/material3/MaterialTheme;

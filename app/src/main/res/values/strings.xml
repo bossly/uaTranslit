@@ -21,4 +21,9 @@
     <string name="cd_clear_history_all">Clear all history</string>
     <string name="cd_history_rerun">Edit again</string>
     <string name="cd_history_delete">Delete</string>
+    <string name="cd_clear_input">Clear text</string>
+    <string name="cd_copy_output">Copy transliteration</string>
+    <string name="cd_select_type">Transliteration standard</string>
+    <string name="cd_info_tip">Standard description</string>
 </resources>
+

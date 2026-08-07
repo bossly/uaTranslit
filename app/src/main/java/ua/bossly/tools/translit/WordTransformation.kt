@@ -17,17 +17,19 @@ data class WordSnap(val snap: String, val skip: Boolean = false)
 
 object WordTransformation {
     fun transform(text: String, transform: WordTransform): String {
-        // 1. separate by words
+        if (text.isEmpty()) return ""
+
+        val separator = transform.snapSeparator()
+        val sb = StringBuilder(text.length * 2)
         val words = text.split(" ")
-        val transformed = ArrayList<String>()
 
-        // 2. transform each word
-        var next: Char?
+        for (wordIndex in words.indices) {
+            if (wordIndex > 0) sb.append(' ')
 
-        // data class WordSnap
-        for (word in words) {
-            val chars = ArrayList<String>()
+            val word = words[wordIndex]
             var skip = false
+            var firstChar = true
+
             word.forEachIndexed { index, char ->
                 if (!skip) {
                     val position = when (index) {
@@ -36,19 +38,21 @@ object WordTransformation {
                         else -> WordPosition.MIDDLE
                     }
 
-                    next = if (word.length > index + 1) word[index + 1] else null
+                    val next = if (word.length > index + 1) word[index + 1] else null
                     val snap = transform.convert(char, next, position)
-                    chars.add(snap.snap)
+
+                    if (!firstChar && separator.isNotEmpty()) {
+                        sb.append(separator)
+                    }
+                    sb.append(snap.snap)
+                    firstChar = false
                     skip = snap.skip
                 } else {
                     skip = false
                 }
             }
-
-            transformed.add(chars.joinToString(transform.snapSeparator()))
         }
 
-        // 3. combine words into sentence
-        return transformed.joinToString(" ")
+        return sb.toString()
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.net.toUri
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import ua.bossly.tools.translit.MainActivity
@@ -87,7 +88,7 @@ object TranslitAppFunctions {
         val database = AppDatabase.getDatabase(context.applicationContext)
         val repository = TransliterationRepository(database.transliterationDao())
 
-        return runBlocking {
+        return runBlocking(Dispatchers.IO) {
             val list = repository.history.first()
             list.take(limit.coerceAtLeast(1)).map { item ->
                 HistoryItemResponse(
@@ -135,14 +136,17 @@ object TranslitAppFunctions {
         outputText: String,
         transformType: TransformType
     ) {
+        val trimmedInput = inputText.trim()
+        val trimmedOutput = outputText.trim()
+        if (trimmedInput.isEmpty()) return
         val database = AppDatabase.getDatabase(context.applicationContext)
         val repository = TransliterationRepository(database.transliterationDao())
-        runBlocking {
-            if (!repository.exists(inputText, outputText)) {
+        runBlocking(Dispatchers.IO) {
+            if (!repository.exists(trimmedInput, trimmedOutput)) {
                 repository.insert(
                     TransliterationHistory(
-                        inputText = inputText,
-                        outputText = outputText,
+                        inputText = trimmedInput,
+                        outputText = trimmedOutput,
                         transformType = transformType.name
                     )
                 )

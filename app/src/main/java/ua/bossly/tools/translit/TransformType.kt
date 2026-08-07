@@ -13,26 +13,31 @@ class TransformType(stream: InputStream) : FileTransliteration(stream) {
 }
 
 object TransformTypes {
+    @Volatile
+    private var cachedTypes: Array<TransformType>? = null
+
     fun types(context: Context): Array<TransformType> {
-        return arrayOf(
-            TransformType(
-                context.resources.openRawResource(R.raw.passport_2010)
-            ),
-            TransformType(
-                context.resources.openRawResource(R.raw.geographic_1996)
-            ),
-            TransformType(
-                context.resources.openRawResource(R.raw.american_1965)
-            ),
-            TransformType(
-                context.resources.openRawResource(R.raw.iso9_1995)
-            ),
-            TransformType(
-                context.resources.openRawResource(R.raw.manifest)
-            ),
-            TransformType(
-                context.resources.openRawResource(R.raw.morze)
-            ),
-        )
+        return cachedTypes ?: synchronized(this) {
+            cachedTypes ?: arrayOf(
+                TransformType(
+                    context.applicationContext.resources.openRawResource(R.raw.passport_2010)
+                ),
+                TransformType(
+                    context.applicationContext.resources.openRawResource(R.raw.geographic_1996)
+                ),
+                TransformType(
+                    context.applicationContext.resources.openRawResource(R.raw.american_1965)
+                ),
+                TransformType(
+                    context.applicationContext.resources.openRawResource(R.raw.iso9_1995)
+                ),
+                TransformType(
+                    context.applicationContext.resources.openRawResource(R.raw.manifest)
+                ),
+                TransformType(
+                    context.applicationContext.resources.openRawResource(R.raw.morze)
+                ),
+            ).also { cachedTypes = it }
+        }
     }
 }

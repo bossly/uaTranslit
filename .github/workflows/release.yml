@@ -31,12 +31,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v5
         with:
+          distribution: temurin
           java-version: 17
+          cache: gradle
 
       - name: Create release.keystore
         env:
@@ -47,10 +49,10 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7.2'
+          ruby-version: '3.2'
+          bundler-cache: true
 
       - name: Publish to Google Play
-        uses: maierj/fastlane-action@v3.1.0
         env:
           APP_SIGN_KEYSTORE_PATH: /tmp/release.keystore
           APP_SIGN_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -60,6 +62,4 @@ jobs:
           APP_VERSION_CODE: ${{ inputs.number || github.run_number }}
           SUPPLY_TRACK: ${{ (inputs.channel == 'public' && 'production') || inputs.channel || 'production' }}
           SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-        with:
-          lane: deploy
-          subdirectory: fastlane
+        run: bundle exec fastlane deploy

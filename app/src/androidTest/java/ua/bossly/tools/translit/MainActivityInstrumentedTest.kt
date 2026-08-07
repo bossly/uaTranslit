@@ -1,6 +1,7 @@
 package ua.bossly.tools.translit
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.StringRes
@@ -23,10 +24,25 @@ import androidx.test.uiautomator.UiDevice
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
+import org.junit.runner.Description
 import org.junit.runner.RunWith
+import org.junit.runners.model.Statement
 import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
 import tools.fastlane.screengrab.locale.LocaleTestRule
+
+class SafeLocaleTestRule : TestRule {
+    private val delegate = LocaleTestRule()
+
+    override fun apply(base: Statement, description: Description): Statement {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            delegate.apply(base, description)
+        } else {
+            base
+        }
+    }
+}
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -41,7 +57,7 @@ class MainActivityInstrumentedTest {
         get() = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @get:Rule(order = 0)
-    val localeTestRule = LocaleTestRule()
+    val localeTestRule: TestRule = SafeLocaleTestRule()
 
     @get:Rule(order = 1)
     val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity> =
@@ -95,6 +111,42 @@ class MainActivityInstrumentedTest {
 
         uiDevice.waitForIdle()
         Screengrab.screenshot("screen2")
+    }
+
+    @Test
+    fun convertOnInputAndTypeChange() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val types = TransformTypes.types(context)
+        val defaultType = types.first()
+        val secondType = if (types.size > 1) types[1] else types.last()
+
+        val sampleInput = "Доброго дня"
+        val expectedInitialOutput = WordTransformation.transform(sampleInput, defaultType)
+        val expectedUpdatedOutput = WordTransformation.transform(sampleInput, secondType)
+
+        composeTestRule.waitForIdle()
+
+        // 1. Enter input text and verify converted output
+        composeTestRule.onNodeWithTag("input", true)
+            .performTextInput(sampleInput)
+        Espresso.closeSoftKeyboard()
+
+        composeTestRule.onNodeWithTag("output", true)
+            .assertTextEquals(expectedInitialOutput)
+
+        // 2. Open type selector dropdown
+        composeTestRule.onNodeWithTag("selector", true)
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        // 3. Select a different transliteration standard
+        composeTestRule.onNodeWithText(secondType.name, substring = true)
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        // 4. Verify output updates to match the new transliteration standard
+        composeTestRule.onNodeWithTag("output", true)
+            .assertTextEquals(expectedUpdatedOutput)
     }
 
     @Test

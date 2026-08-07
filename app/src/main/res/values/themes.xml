@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Starting Theme for AndroidX SplashScreen API -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/colorPrimary</item>
+        <item name="postSplashScreenTheme">@style/Theme.Transliteration</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="Theme.Transliteration" parent="android:Theme.Material.Light.NoActionBar">
         <!-- Primary brand color. -->
