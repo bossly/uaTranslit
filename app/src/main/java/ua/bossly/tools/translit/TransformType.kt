@@ -25,6 +25,9 @@ object TransformTypes {
                 context.resources.openRawResource(R.raw.american_1965)
             ),
             TransformType(
+                context.resources.openRawResource(R.raw.iso9_1995)
+            ),
+            TransformType(
                 context.resources.openRawResource(R.raw.manifest)
             ),
             TransformType(
