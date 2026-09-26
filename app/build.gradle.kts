@@ -14,11 +14,11 @@ val appVersionName = System.getenv("APP_VERSION_NAME")?.takeIf { it.isNotBlank()
 
 extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
     namespace = "ua.bossly.tools.translit"
-    compileSdk = 37
+    compileSdk = 37 // Android 17
 
     defaultConfig {
         applicationId = "ua.bossly.tools.translit"
-        minSdk = 31
+        minSdk = 31 // Android 12 (Codename: "S")
         versionCode = appVersionCode
         versionName = appVersionName
 
