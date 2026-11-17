@@ -20,30 +20,42 @@ import ua.bossly.tools.translit.data.TransliterationRepository
 /**
  * Agent-callable building blocks and Jetpack AppFunctions registry for the Gemini ecosystem.
  *
- * Provides headless execution of transliteration operations, standard discovery,
+ * Provides headless execution of transliteration operations (including auto-detected
+ * Latin -> Cyrillic reverse transliteration with offline word autocorrect), standard discovery,
  * history querying, and intent resolution for foreground UI transitions.
  */
 object TranslitAppFunctions {
 
     /**
-     * Executes headless text transliteration.
+     * Executes headless text transliteration with automatic direction detection (Cyrillic <-> Latin/Morse)
+     * and offline on-device word autocorrect for reverse transliteration.
      * Callable directly by Gemini / AI Assistants without opening an Activity.
      *
      * @param context Application context.
      * @param text Ukrainian or Latin text to transform.
      * @param systemId Preferred transliteration standard name or ID (defaults to Passport 2010 if unspecified).
      * @param saveToHistory Whether to save the transliteration record into Room database history.
+     * @param autocorrect Whether to apply offline Ukrainian word autocorrect when converting Latin -> Cyrillic.
      */
+    @JvmOverloads
     fun transliterateText(
         context: Context,
         text: String,
         systemId: String? = null,
-        saveToHistory: Boolean = true
+        saveToHistory: Boolean = true,
+        autocorrect: Boolean = true
     ): TranslitResultResponse {
         val availableSystems = TransformTypes.types(context)
         val selectedSystem = findSystem(availableSystems, systemId) ?: availableSystems.first()
+        val direction = WordTransformation.detectDirection(text, selectedSystem)
 
-        val resultText = WordTransformation.transform(text, selectedSystem)
+        val resultText = WordTransformation.transform(
+            text = text,
+            transform = selectedSystem,
+            direction = direction,
+            autocorrect = autocorrect,
+            context = context.applicationContext
+        )
 
         if (saveToHistory) {
             saveHistoryHeadless(context, text, resultText, selectedSystem)
@@ -58,7 +70,7 @@ object TranslitAppFunctions {
     }
 
     /**
-     * Concise function endpoint enabling simple invocation: transliterate("слово").
+     * Concise function endpoint enabling simple invocation: transliterate("слово") or transliterate("slovo").
      *
      * @param context Application context.
      * @param text Text string to transform.

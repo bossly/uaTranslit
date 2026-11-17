@@ -1,1 +1,1 @@
-App to translit cyrilic phrases to latin using commonly used translation rules.
+Cyrillic ⇄ Latin transliteration with offline Ukrainian word autocorrect.

@@ -114,6 +114,38 @@ class MainActivityInstrumentedTest {
     }
 
     @Test
+    fun makeReverseTranslitWithAutocorrectAndSwap() {
+        composeTestRule.waitForIdle()
+
+        val input = composeTestRule.onNodeWithTag("input", true)
+        input.performTextInput("Taras Bulba")
+        Espresso.closeSoftKeyboard()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("output", true)
+            .assertTextEquals("Тарас Бульба")
+
+        composeTestRule.onNodeWithTag("autocorrect_toggle", true)
+            .assertIsDisplayed()
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("output", true)
+            .assertTextEquals("Тарас Булба")
+
+        composeTestRule.onNodeWithTag("autocorrect_toggle", true)
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("swap_direction", true)
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("output", true)
+            .assertTextEquals("Taras Bulba")
+    }
+
+    @Test
     fun convertOnInputAndTypeChange() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val types = TransformTypes.types(context)
