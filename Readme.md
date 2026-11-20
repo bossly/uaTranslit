@@ -1,4 +1,4 @@
-# Транслітерація - тексту кирилиці в латиницю.
+# Транслітерація — двостороння транслітерація кирилиці та латиниці (Кирилиця ⇄ Латиниця) з офлайн автовиправленням.
 
 [![Actions Status](https://github.com/bossly/uaTranslit/workflows/Create%20Release/badge.svg)](https://github.com/bossly/uaTranslit/actions)
 [![The most recent tag](https://img.shields.io/github/v/release/bossly/uaTranslit.svg?logo=github)](https://github.com/bossly/uaTranslit/tags)

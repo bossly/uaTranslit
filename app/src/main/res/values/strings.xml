@@ -25,5 +25,9 @@
     <string name="cd_copy_output">Copy transliteration</string>
     <string name="cd_select_type">Transliteration standard</string>
     <string name="cd_info_tip">Standard description</string>
+    <string name="cd_swap_direction">Swap transliteration direction</string>
+    <string name="direction_cyr_to_lat">Cyrillic → Latin</string>
+    <string name="direction_lat_to_cyr">Latin → Cyrillic</string>
+    <string name="autocorrect_label">Autocorrect</string>
+    <string name="cd_toggle_autocorrect">Toggle word autocorrect</string>
 </resources>
-

@@ -1,3 +1,11 @@
-App to translit cyrilic phrases to latin using commonly used translation rules.
+App for bidirectional transliteration between Ukrainian Cyrillic and Latin (plus Morse code) using official and commonly used standards. Includes automatic direction detection and 100% offline on-device Ukrainian word autocorrect.
+
+<b>Features</b>
+• Forward and reverse transliteration (Cyrillic ⇄ Latin) across 6 standards: Passport (KMU 2010), Geographic (UKPPT 1996), American (BGN/PCGN 1965), ISO 9:1995, Manifest, and Morse code.
+• Smart offline on-device Ukrainian word autocorrect for Latin → Cyrillic conversion (restores omitted soft signs, apostrophes, resolves i/yi/y and h/g ambiguities, and fixes spelling typos completely offline).
+• Automatic script detection with a one-tap direction swap button and autocorrect toggle.
+
+<b>Privacy</b>
+No tracking, no ads, and no internet permission required — everything runs locally on your device.
 
 Project is open-source: https://github.com/bossly/uaTranslit

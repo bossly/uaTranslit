@@ -25,11 +25,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +39,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ContentCopy
@@ -44,7 +47,9 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Spellcheck
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -52,9 +57,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -78,6 +86,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -213,6 +222,7 @@ class MainActivity : ComponentActivity() {
                         viewModel = viewModel,
                         onBack = { currentScreen = "home" },
                         onReRun = { text, typeName ->
+                            viewModel.resetManualDirection()
                             activeText = text
                             activeTypeName = typeName
                             currentScreen = "home"
@@ -298,6 +308,8 @@ fun HomeView(
     }
     val types by viewModel.typesState.collectAsState()
     val outputText by viewModel.outputText.collectAsState()
+    val direction by viewModel.effectiveDirection.collectAsState()
+    val autocorrectEnabled by viewModel.autocorrectEnabled.collectAsState()
 
     ReportDrawnWhen { types.isNotEmpty() }
     HomeContent(
@@ -306,6 +318,8 @@ fun HomeView(
         initialTypeName = initialTypeName,
         initialFeature = initialFeature,
         outputText = outputText,
+        direction = direction,
+        autocorrectEnabled = autocorrectEnabled,
         onNavigateToHistory = onNavigateToHistory,
         onSaveToHistory = { input, output, type -> viewModel.saveToHistory(input, output, type) },
         onShare = { text -> share(text, context) },
@@ -316,6 +330,14 @@ fun HomeView(
         onTypeChange = { type ->
             viewModel.updateSelectedType(type)
             onTypeChange(type)
+        },
+        onSwapDirection = {
+            val swappedText = viewModel.swapDirection()
+            onTextChange(swappedText)
+            swappedText
+        },
+        onAutocorrectChange = { enabled ->
+            viewModel.setAutocorrectEnabled(enabled)
         }
     )
 }
@@ -328,11 +350,15 @@ fun HomeContent(
     initialTypeName: String = "",
     initialFeature: String,
     outputText: String,
+    direction: TranslitDirection = TranslitDirection.CYRILLIC_TO_LATIN,
+    autocorrectEnabled: Boolean = true,
     onNavigateToHistory: () -> Unit,
     onSaveToHistory: (String, String, TransformType) -> Unit,
     onShare: (String) -> Unit,
     onTextChange: (String) -> Unit = {},
-    onTypeChange: (TransformType) -> Unit = {}
+    onTypeChange: (TransformType) -> Unit = {},
+    onSwapDirection: () -> String = { initialText },
+    onAutocorrectChange: (Boolean) -> Unit = {}
 ) {
     val context = LocalContext.current
     val clipboardCopiedMessage = stringResource(R.string.clipboard_copied)
@@ -369,6 +395,26 @@ fun HomeContent(
     if (initialFeature.isNotEmpty()) {
         Log.d("HomeView", "Initial feature requested: $initialFeature")
     }
+
+    val inputLabel = if (direction == TranslitDirection.CYRILLIC_TO_LATIN) {
+        stringResource(id = R.string.input_cyrillic)
+    } else {
+        stringResource(id = R.string.input_latin)
+    }
+
+    val outputLabel = if (direction == TranslitDirection.CYRILLIC_TO_LATIN) {
+        stringResource(id = R.string.input_latin)
+    } else {
+        stringResource(id = R.string.input_cyrillic)
+    }
+
+    val directionBadgeText = if (direction == TranslitDirection.CYRILLIC_TO_LATIN) {
+        stringResource(id = R.string.direction_cyr_to_lat)
+    } else {
+        stringResource(id = R.string.direction_lat_to_cyr)
+    }
+    val swapCd = stringResource(id = R.string.cd_swap_direction)
+    val autocorrectCd = stringResource(id = R.string.cd_toggle_autocorrect)
 
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
@@ -465,7 +511,7 @@ fun HomeContent(
                         inputText = it
                         onTextChange(it)
                     },
-                    label = stringResource(id = R.string.input_cyrillic),
+                    label = inputLabel,
                     trailingIcon = {
                         if (inputText.isNotEmpty()) {
                             IconButton(onClick = {
@@ -481,13 +527,70 @@ fun HomeContent(
                     }
                 )
 
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            val newText = onSwapDirection()
+                            inputText = newText
+                        },
+                        modifier = Modifier
+                            .testTag("swap_direction")
+                            .semantics {
+                                contentDescription = swapCd
+                            },
+                        shape = RoundedCornerShape(12.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.SwapVert,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = directionBadgeText,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+
+                    if (direction == TranslitDirection.LATIN_TO_CYRILLIC) {
+                        FilterChip(
+                            selected = autocorrectEnabled,
+                            onClick = { onAutocorrectChange(!autocorrectEnabled) },
+                            modifier = Modifier
+                                .testTag("autocorrect_toggle")
+                                .semantics {
+                                    contentDescription = autocorrectCd
+                                },
+                            label = {
+                                Text(text = stringResource(id = R.string.autocorrect_label))
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = if (autocorrectEnabled) {
+                                        Icons.Default.Check
+                                    } else {
+                                        Icons.Default.Spellcheck
+                                    },
+                                    contentDescription = null,
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                )
+                            }
+                        )
+                    }
+                }
+
                 TranslitTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("output"),
                     value = outputText,
                     onValueChange = {},
-                    label = stringResource(id = R.string.input_latin),
+                    label = outputLabel,
                     readOnly = true,
                     trailingIcon = {
                         Row {

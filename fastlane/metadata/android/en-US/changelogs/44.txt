@@ -1,0 +1,3 @@
+- Added reverse transliteration from Latin and Morse code to Cyrillic with automatic direction detection
+- Added 100% offline on-device Ukrainian word autocorrect (restoring soft signs, apostrophes, i/yi/y/g/h ambiguities, and fixing typos)
+- Added quick direction swap button and autocorrect toggle

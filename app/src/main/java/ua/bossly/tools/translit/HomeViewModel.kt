@@ -13,15 +13,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import ua.bossly.tools.translit.data.TransliterationHistory
 import ua.bossly.tools.translit.data.TransliterationRepository
-
-import kotlinx.coroutines.flow.map
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class HomeViewModel(private val repository: TransliterationRepository) : ViewModel() {
@@ -29,6 +27,16 @@ class HomeViewModel(private val repository: TransliterationRepository) : ViewMod
         object SaveSuccess : UiEvent()
         object AlreadyExists : UiEvent()
     }
+
+    private data class TransformRequest(
+        val text: String,
+        val type: TransformType?,
+        val direction: TranslitDirection,
+        val autocorrect: Boolean
+    )
+
+    @Volatile
+    private var appContext: Context? = null
 
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
@@ -38,12 +46,55 @@ class HomeViewModel(private val repository: TransliterationRepository) : ViewMod
 
     private val _inputText = MutableStateFlow("")
     private val _selectedType = MutableStateFlow<TransformType?>(null)
+    private val _manualDirection = MutableStateFlow<TranslitDirection?>(null)
+    private val _autocorrectEnabled = MutableStateFlow(true)
+    val autocorrectEnabled: StateFlow<Boolean> = _autocorrectEnabled.asStateFlow()
 
-    val outputText: StateFlow<String> = combine(_inputText, _selectedType) { text, type ->
-        text to type
+    val effectiveDirection: StateFlow<TranslitDirection> = combine(
+        _inputText,
+        _selectedType,
+        _manualDirection
+    ) { text, type, manual ->
+        manual ?: WordTransformation.detectDirection(text, type)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = TranslitDirection.CYRILLIC_TO_LATIN
+    )
+
+    val outputText: StateFlow<String> = combine(
+        _inputText,
+        _selectedType,
+        effectiveDirection,
+        _autocorrectEnabled
+    ) { text, type, direction, autocorrect ->
+        TransformRequest(text, type, direction, autocorrect)
     }
-        .mapLatest { (text, type) ->
-            if (text.isEmpty() || type == null) "" else WordTransformation.transform(text, type)
+        .transformLatest { req ->
+            if (req.text.isEmpty() || req.type == null) {
+                emit("")
+            } else {
+                val baseResult = WordTransformation.transform(
+                    text = req.text,
+                    transform = req.type,
+                    direction = req.direction,
+                    autocorrect = req.autocorrect,
+                    context = appContext
+                )
+                emit(baseResult)
+
+                val ctx = appContext
+                if (ctx != null &&
+                    req.direction == TranslitDirection.LATIN_TO_CYRILLIC &&
+                    req.autocorrect &&
+                    req.type.snapSeparator() != " "
+                ) {
+                    val refined = SystemSpellCheckerHelper.refineUnknownWords(ctx, baseResult)
+                    if (refined != baseResult) {
+                        emit(refined)
+                    }
+                }
+            }
         }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
@@ -57,6 +108,7 @@ class HomeViewModel(private val repository: TransliterationRepository) : ViewMod
         )
 
     fun loadTypesAsync(context: Context, initialTypeName: String = "") {
+        appContext = context.applicationContext
         if (_typesState.value.isNotEmpty()) {
             if (_selectedType.value == null) {
                 _selectedType.value = _typesState.value.find { it.name == initialTypeName }
@@ -70,15 +122,49 @@ class HomeViewModel(private val repository: TransliterationRepository) : ViewMod
             if (_selectedType.value == null && loaded.isNotEmpty()) {
                 _selectedType.value = loaded.find { it.name == initialTypeName } ?: loaded.first()
             }
+            UkrainianDictionary.ensureLoaded(context.applicationContext)
         }
     }
 
     fun updateInput(text: String) {
+        if (text.isEmpty()) {
+            _manualDirection.value = null
+        }
         _inputText.value = text
     }
 
     fun updateSelectedType(type: TransformType) {
         _selectedType.value = type
+    }
+
+    fun setAutocorrectEnabled(enabled: Boolean) {
+        _autocorrectEnabled.value = enabled
+    }
+
+    fun resetManualDirection() {
+        _manualDirection.value = null
+    }
+
+    /**
+     * Flips the active conversion direction and moves the current output text into the input field,
+     * locking the manual override until the input field is cleared.
+     *
+     * @return The new input text after swapping.
+     */
+    fun swapDirection(): String {
+        val currentDir = effectiveDirection.value
+        val newDir = if (currentDir == TranslitDirection.CYRILLIC_TO_LATIN) {
+            TranslitDirection.LATIN_TO_CYRILLIC
+        } else {
+            TranslitDirection.CYRILLIC_TO_LATIN
+        }
+        val currentOut = outputText.value
+        _manualDirection.value = newDir
+        if (currentOut.isNotEmpty()) {
+            _inputText.value = currentOut
+            return currentOut
+        }
+        return _inputText.value
     }
 
     fun saveToHistory(inputText: String, outputText: String, transformType: TransformType) {
